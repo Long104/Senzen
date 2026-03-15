@@ -1,27 +1,21 @@
 package middleware
 
 import (
-	// "os"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func CORSMiddleware() fiber.Handler {
-	// frontendOrigin := os.Getenv("FRONTEND_URL") // Set this in your environment variables
-	// if frontendOrigin == "" {
-	// 	frontendOrigin = "http://localhost:3000" // Default for development
-	// }
+	frontendOrigin := os.Getenv("FRONTEND_URL") // Set this in your environment variables
+	if frontendOrigin == "" {
+		frontendOrigin = "http://localhost:3000" // Default for development
+	}
 	return cors.New(cors.Config{
-		AllowMethods: "GET,POST,HEAD,PUT,DELETE,PATCH",
-		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
-		// AllowOrigins: "http://localhost:3000", // Set to your frontend origin
-		// AllowOrigins: "https://senzen-frontend.vercel.app",
-		// AllowOrigins: frontendOrigin,
-		// AllowOrigins:     "http://cashwise.com", // Set to your frontend origin
-		// AllowCredentials: true, // Allows cookies and credentials to be sent
-
-		AllowOrigins:     "https://frontend.pantorn.me",
-		AllowCredentials: true,
+		AllowMethods:     "GET,POST,HEAD,PUT,DELETE,PATCH,OPTIONS",
+		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
+		AllowOrigins:     frontendOrigin,
+		AllowCredentials: true, // Allows cookies and credentials to be sent
 	})
 }
