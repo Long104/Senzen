@@ -140,23 +140,13 @@ func GoogleCallback(c *fiber.Ctx) error {
 
 	// Set cookie
 	c.Cookie(&fiber.Cookie{
-		// Name:    "jwt",
-		// Value:   t,
-		// Path:    "/",
-		// Expires: time.Now().Add(time.Hour * 72),
-		// HTTPOnly: false,
-		// SameSite: "Lax",
-
 		Name:     "jwt",
 		Value:    t,
 		Path:     "/",
 		Expires:  time.Now().Add(time.Hour * 72),
 		HTTPOnly: false,
 		SameSite: "Lax",
-		// HTTPOnly: true,
-		// Secure:   true,   // required for cross-site cookies over HTTPS
-		// SameSite: "None", // allow sending cookies cross-site
-		Domain:   ".pantorn.me",
+		Secure:   true, // required for HTTPS
 	})
 
 	// return c.SendString(string(userData))
@@ -169,7 +159,8 @@ func GoogleCallback(c *fiber.Ctx) error {
 	// 	"token":   t,
 	// })
 
-	return c.Redirect(os.Getenv("FRONTEND_URL") + "/home")
+	// Redirect with token as URL parameter since cookie won't work cross-origin
+	return c.Redirect(os.Getenv("FRONTEND_URL") + "/home?token=" + t)
 	// return c.Redirect(os.Getenv("FRONTEND_URL") + "/sign-in")
 // return c.Type("html").SendString(`
 // 	<!DOCTYPE html>

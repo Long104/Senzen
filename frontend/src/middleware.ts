@@ -5,7 +5,24 @@ import { jwtDecode } from "jwt-decode";
 // import useAuthStore from "@/zustand/auth";
 
 export async function middleware(req: NextRequest) {
-	const token = req.cookies.get("jwt");
+	let token = req.cookies.get("jwt");
+
+	// Check for token in URL (from OAuth redirect)
+	const urlToken = req.nextUrl.searchParams.get("token");
+	if (urlToken && !token) {
+		// Create response and set cookie
+		const response = NextResponse.redirect(new URL("/home", req.url));
+		const isHttps = req.url.startsWith("https:");
+		response.cookies.set("jwt", urlToken, {
+			httpOnly: false,
+			sameSite: "lax",
+			secure: isHttps,
+			path: "/",
+			maxAge: 60 * 60 * 24 * 3, // 3 days
+		});
+		return response;
+	}
+
   // const login = useAuthStore((state) => state.login)
 
 	const handleLogout = async () => {
@@ -87,12 +104,12 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
 	matcher: [
+		"/home",
 		"/dashboard",
 		"/createPlan",
 		"/",
 		"/sign-in",
 		"/sign-up",
 		"/((?!.*\\..*|_next).*)",
-		// "/(api|trpc)(.*)"
-	], // Apply middleware to `/home`, `/dashboard`, etc.
+	],
 };

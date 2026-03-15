@@ -42,14 +42,22 @@ export default function FinancialPlans() {
 	}
 
 	useEffect(() => {
-		const token = document.cookie?.split("jwt=")[1];
-		// .find((row) => row.startsWith("jwt="))
-		// ?.split("=")[1];
+		// First check for token in URL (from OAuth redirect)
+		const urlParams = new URLSearchParams(window.location.search);
+		const urlToken = urlParams.get("token");
 
+		if (urlToken) {
+			// Store the token from URL
+			logins(urlToken);
+			// Clean URL to remove token from address bar
+			window.history.replaceState({}, "", window.location.pathname);
+			return;
+		}
+
+		// Fall back to checking cookie
+		const token = document.cookie?.split("jwt=")[1];
 		console.log("login work", token);
 		if (token) {
-			// localStorage.setItem("token", token);
-			// logins(String(token));
 			logins(String(token));
 		}
 	}, []);
