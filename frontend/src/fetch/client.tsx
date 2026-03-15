@@ -20,7 +20,7 @@ export async function fetchGet(url: string): Promise<any> {
 		return await res.json();
 	} catch (error) {
 		console.error(error);
-		return <div>Error loading data</div>;
+		return []; // Return empty array instead of JSX
 	}
 }
 
@@ -44,7 +44,7 @@ export async function fetchPost(url: string, data: any): Promise<any> {
 		return await res.json();
 	} catch (error) {
 		console.error(error);
-		return <div>Error loading data</div>;
+		return null;
 	}
 }
 
