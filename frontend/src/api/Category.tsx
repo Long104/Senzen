@@ -5,7 +5,7 @@ import { z } from "zod";
 type Category = z.infer<typeof CategorySchema>;
 export async function fetchDeleteCategory(
 	url: string,
-): Promise<Partial<Category> & { error?: string }> {
+): Promise<Partial<Category> & { error?: string } | null> {
 	const jwt = Cookies.get("jwt");
 	try {
 		const res = await fetch(process.env.NEXT_PUBLIC_BACKEND + `/${url}`, {

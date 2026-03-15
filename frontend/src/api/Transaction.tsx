@@ -28,7 +28,7 @@ export const createPlan = async (newPlan: Partial<Plan>) => {
 
 export async function fetchDeleteTransaction(
 	url: string,
-): Promise<FetchDeleteTransactionResponse> {
+): Promise<FetchDeleteTransactionResponse | null> {
 	const jwt = Cookies.get("jwt");
 	try {
 		const res = await fetch(process.env.NEXT_PUBLIC_BACKEND + `/${url}`, {
