@@ -17,25 +17,33 @@ import {
 } from "@/components/ui/sidebar";
 import { ModeToggle } from "@/components/mode-toggle";
 import { AppSidebar } from "@/components/app-sidebar";
-import { usePathname } from "next/navigation"; // This hook gets the current pathname
+import { usePathname } from "next/navigation";
 import Link from "next/link";
-// import ReactQueryProvider from "@/tanstack/query/ReactQueryProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
+import { AnimatePresence, motion } from "framer-motion";
+
+const pageNames: Record<string, string> = {
+	home: "Home",
+	createPlan: "Create Plan",
+	viewPlan: "View Plan",
+	plan: "Plan",
+	ws: "WebSocket",
+};
+
 export default function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const pathname = usePathname(); // Get the current pathname
-	const eachPath = pathname?.split("/") ?? []; // Split pathname into segments
+	const pathname = usePathname();
+	const eachPath = pathname?.split("/") ?? [];
 	const queryClient = new QueryClient({
 		defaultOptions: {
 			queries: {
 				staleTime: 60 * 1000 * 5,
 				gcTime: 10 * 60 * 1000,
 				refetchOnWindowFocus: false,
-				// refetchInterval: 4000,
 			},
 		},
 	});
@@ -43,7 +51,6 @@ export default function RootLayout({
 	return (
 		<>
 			<QueryClientProvider client={queryClient}>
-				{/* <ReactQueryProvider> */}
 				<SidebarProvider>
 					<AppSidebar />
 					<SidebarInset>
@@ -56,30 +63,44 @@ export default function RootLayout({
 									<BreadcrumbList>
 										{eachPath[1] && (
 											<BreadcrumbItem className="hidden md:block">
-												<BreadcrumbLink href="#">{eachPath[1]}</BreadcrumbLink>
+												<BreadcrumbLink href="#">
+													{pageNames[eachPath[1]] || eachPath[1]}
+												</BreadcrumbLink>
 											</BreadcrumbItem>
 										)}
 										{eachPath[2] && (
 											<>
 												<BreadcrumbSeparator className="hidden md:block" />
 												<BreadcrumbItem>
-													<BreadcrumbPage>{eachPath[2]}</BreadcrumbPage>
+													<BreadcrumbPage>
+														{pageNames[eachPath[2]] ||
+															eachPath[2]?.replace(/_/g, " ")}
+													</BreadcrumbPage>
 												</BreadcrumbItem>
 											</>
 										)}
 									</BreadcrumbList>
 								</Breadcrumb>
 							</div>
-							<Button variant={"outline"} className="mr-2" asChild>
+							<Button variant="outline" className="mr-2" asChild>
 								<Link href="/createPlan">+</Link>
 							</Button>
 						</header>
-						{children}
+						<AnimatePresence mode="wait">
+							<motion.div
+								key={pathname}
+								initial={{ opacity: 0, y: 8 }}
+								animate={{ opacity: 1, y: 0 }}
+								exit={{ opacity: 0, y: -8 }}
+								transition={{ duration: 0.2, ease: "easeInOut" }}
+							>
+								{children}
+							</motion.div>
+						</AnimatePresence>
 						<Toaster />
 					</SidebarInset>
 				</SidebarProvider>
 				<ReactQueryDevtools initialIsOpen={false} />
-				{/* </ReactQueryProvider> */}
 			</QueryClientProvider>
 		</>
 	);

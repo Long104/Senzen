@@ -2,11 +2,9 @@
 
 import * as React from "react";
 import {
-	GalleryVerticalEnd,
-	Settings2,
-	Package,
 	Building2,
-	NotebookPen,
+	PlusCircle,
+	Settings2,
 	Newspaper,
 	House,
 } from "lucide-react";
@@ -15,7 +13,9 @@ import { NavMain } from "@/components/nav-main";
 import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
-import { Sidebar,
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+	Sidebar,
 	SidebarContent,
 	SidebarFooter,
 	SidebarHeader,
@@ -23,13 +23,13 @@ import { Sidebar,
 } from "@/components/ui/sidebar";
 
 import useAuthStore from "@/zustand/auth";
-// This is sample data.
 import { usePlan } from "@/hooks/usePlan";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	const users = useAuthStore((state) => state.user);
 	const { plansQuery } = usePlan();
-	const { data: plans } = plansQuery;
+	const { data: plans, isLoading } = plansQuery;
+
 	const data = {
 		user: {
 			name: users?.name,
@@ -42,46 +42,32 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				logo: Building2,
 				plan: "Company",
 			},
-			{
-				name: "Pricing",
-				logo: Package,
-				plan: "pricing",
-			},
-			{
-				name: "About Us",
-				logo: GalleryVerticalEnd,
-				plan: "About us",
-			},
 		],
 		navMain: [
 			{
 				title: "Plan",
 				url: "#",
-				icon: NotebookPen,
-				// isActive: true,
-				items: 
-					plans?.map((plan: any) => ({
-						title: plan?.name || "Unnamed Plan",
-						url: `/plan/${plan?.name}/?id=${plan.id}`,
-					})) || [],
+				icon: Newspaper,
+				items: isLoading
+					? [
+							{ title: "Loading...", url: "#" },
+							{ title: "Loading...", url: "#" },
+						]
+					: plans?.length
+						? plans.map((plan: Record<string, unknown>) => ({
+								title: (plan?.name as string) || "Unnamed Plan",
+								url: `/plan/${plan?.name}/?id=${plan.id}`,
+							}))
+						: [{ title: "No plans yet", url: "/createPlan" }],
 			},
 			{
-				title: "News&Forums",
+				title: "News & Forums",
 				url: "#",
 				icon: Newspaper,
 				items: [
-					{
-						title: "Money",
-						url: "#",
-					},
-					{
-						title: "Saving",
-						url: "#",
-					},
-					{
-						title: "Story",
-						url: "#",
-					},
+					{ title: "Money", url: "#" },
+					{ title: "Saving", url: "#" },
+					{ title: "Story", url: "#" },
 				],
 			},
 			{
@@ -89,22 +75,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				url: "#",
 				icon: Settings2,
 				items: [
-					{
-						title: "General",
-						url: "#",
-					},
-					{
-						title: "Team",
-						url: "#",
-					},
-					{
-						title: "Billing",
-						url: "#",
-					},
-					{
-						title: "Limits",
-						url: "#",
-					},
+					{ title: "General", url: "#" },
+					{ title: "Team", url: "#" },
+					{ title: "Billing", url: "#" },
+					{ title: "Limits", url: "#" },
 				],
 			},
 		],
@@ -115,33 +89,26 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				icon: House,
 			},
 			{
-				name: "Plan",
-				url: "#plan",
-				icon: Newspaper,
-			},
-			{
-				name: "News",
-				url: "#news",
-				icon: Newspaper,
+				name: "Create Plan",
+				url: "/createPlan",
+				icon: PlusCircle,
 			},
 		],
 	};
-	// useEffect(() => {}, []);
+
 	return (
-		<>
-			<Sidebar collapsible="icon" {...props}>
-				<SidebarHeader>
-					<TeamSwitcher teams={data.teams} />
-				</SidebarHeader>
-				<SidebarContent>
-					<NavMain items={data.navMain} />
-					<NavProjects projects={data.projects} />
-				</SidebarContent>
-				<SidebarFooter>
-					<NavUser user={data.user} />
-				</SidebarFooter>
-				<SidebarRail />
-			</Sidebar>
-		</>
+		<Sidebar collapsible="icon" {...props}>
+			<SidebarHeader>
+				<TeamSwitcher teams={data.teams} />
+			</SidebarHeader>
+			<SidebarContent>
+				<NavMain items={data.navMain} />
+				<NavProjects projects={data.projects} />
+			</SidebarContent>
+			<SidebarFooter>
+				<NavUser user={data.user} />
+			</SidebarFooter>
+			<SidebarRail />
+		</Sidebar>
 	);
 }

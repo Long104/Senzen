@@ -16,50 +16,53 @@ import {
 } from "@/components/ui/navigation-menu";
 import { ProfileDropdown } from "@/components/ui/profile-dropdown";
 
-const components: { title: string; href: string; description: string }[] = [
+const pricingItems: { title: string; href: string; description: string }[] = [
 	{
-		title: "View plan",
-		href: "/docs/primitives/alert-dialog",
-		description: "view your plan",
+		title: "Free",
+		href: "/pricing",
+		description: "Get started with basic budgeting tools",
+	},
+	{
+		title: "Pro",
+		href: "/pricing",
+		description: "Advanced planning and analytics",
+	},
+	{
+		title: "Enterprise",
+		href: "/pricing",
+		description: "Team collaboration and custom integrations",
 	},
 ];
 
 export function NavigationMenuDemo() {
 	return (
-		// <NavigationMenu className="[&_*]:bg-primary [&_*]:text-accent-foreground z-50">
 		<NavigationMenu className="[&>*]:bg-primary [&>*]:text-accent-foreground z-50">
 			<NavigationMenuList>
 				<NavigationMenuItem>
-					<Link href="/createPlan">
-						<NavigationMenuTrigger>Create Plan</NavigationMenuTrigger>
-						<NavigationMenuContent>
-							{/* <ul className="grid gap-2 p-6 md:w-[400px] lg:w-[400px] lg:grid-cols-1"> */}
-							{/* 	<ListItem href="/docs" title="Weekly"> */}
-							{/* 		Create your budgeting plan for weekly */}
-							{/* 	</ListItem> */}
-							{/* 	<ListItem href="/docs/installation" title="Monthly"> */}
-							{/* 		Create your budgeting plan for monthly */}
-							{/* 	</ListItem> */}
-							{/* 	<ListItem href="/docs/primitives/typography" title="Customize"> */}
-							{/* 		Customize your budgeting plan */}
-							{/* 	</ListItem> */}
-							{/* </ul> */}
-						</NavigationMenuContent>
+					<Link href="/createPlan" legacyBehavior passHref>
+						<NavigationMenuLink className={navigationMenuTriggerStyle()}>
+							Create Plan
+						</NavigationMenuLink>
 					</Link>
 				</NavigationMenuItem>
 				<NavigationMenuItem>
-					<Link href="/viewPlan">
-						<NavigationMenuTrigger>View Plan</NavigationMenuTrigger>
+					<Link href="/viewPlan" legacyBehavior passHref>
+						<NavigationMenuLink className={navigationMenuTriggerStyle()}>
+							View Plan
+						</NavigationMenuLink>
 					</Link>
+				</NavigationMenuItem>
+				<NavigationMenuItem>
+					<NavigationMenuTrigger>Pricing</NavigationMenuTrigger>
 					<NavigationMenuContent>
-						<ul className="grid w-[400px] gap-3 p-2 md:w-[400px] md:grid-cols-1 lg:w-[400px] ">
-							{components.map((component) => (
+						<ul className="grid w-[400px] gap-3 p-2 md:w-[400px] md:grid-cols-1 lg:w-[400px]">
+							{pricingItems.map((item) => (
 								<ListItem
-									key={component.title}
-									title={component.title}
-									href={component.href}
+									key={item.title}
+									title={item.title}
+									href={item.href}
 								>
-									{component.description}
+									{item.description}
 								</ListItem>
 							))}
 						</ul>
@@ -92,7 +95,7 @@ const ListItem = React.forwardRef<
 					{...props}
 				>
 					<div className="text-sm font-medium leading-none">{title}</div>
-					<p className=" line-clamp-2 text-sm leading-snug text-muted-foreground">
+					<p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
 						{children}
 					</p>
 				</a>
