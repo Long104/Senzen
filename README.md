@@ -1,10 +1,8 @@
-# 💰 Cash Wise
+# Senzen
 
-[good](./docs/hello.md)
 
 **Your intelligent companion for effortless money management.**
 
-![CashWise Banner](https://github.com/user-attachments/assets/371182ba-1f0a-40ab-b123-ef8cdb66d39d)
 ---
 
 ## 🚀 Overview
