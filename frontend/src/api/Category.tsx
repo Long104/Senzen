@@ -20,7 +20,6 @@ export async function fetchDeleteCategory(
 		}
 
 		const text = await res.text();
-		console.log(text);
 		return text ? JSON.parse(text) : null;
 		// return await res.json(); // Or `return { success: true };` if no JSON response
 	} catch (error) {

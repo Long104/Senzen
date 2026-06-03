@@ -139,5 +139,5 @@ func GithubCallback(c *fiber.Ctx) error {
 	// return c.SendString(string(userData))
 	// return c.Redirect("http://localhost:3000/")
 	// return c.Redirect("http://localhost:3000/home")
-	return c.Redirect(os.Getenv("FRONEND_URL") + "/home")
+	return c.Redirect(os.Getenv("FRONTEND_URL") + "/home")
 }

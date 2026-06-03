@@ -83,20 +83,20 @@ export default function Component() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<form onSubmit={handleSubmit} className="space-y-4">
-						<div className="space-y-2">
+					<form onSubmit={handleSubmit} className="flex flex-col gap-4">
+						<div className="flex flex-col gap-2">
 							<Label htmlFor="name">Username</Label>
 							<Input id="name" name="name" required />
 						</div>
-						<div className="space-y-2">
+						<div className="flex flex-col gap-2">
 							<Label htmlFor="email">Email</Label>
 							<Input id="email" name="email" type="email" required />
 						</div>
-						<div className="space-y-2">
+						<div className="flex flex-col gap-2">
 							<Label htmlFor="password">Password</Label>
 							<Input id="password" name="password" type="password" required />
 						</div>
-						<div className="space-y-2">
+						<div className="flex flex-col gap-2">
 							<Label htmlFor="confirmPassword">Confirm Password</Label>
 							<Input
 								id="confirmPassword"

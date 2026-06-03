@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/sidebar";
 import { ModeToggle } from "@/components/mode-toggle";
 import { AppSidebar } from "@/components/app-sidebar";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -38,7 +39,7 @@ export default function RootLayout({
 }>) {
 	const pathname = usePathname();
 	const eachPath = pathname?.split("/") ?? [];
-	const queryClient = new QueryClient({
+	const [queryClient] = useState(() => new QueryClient({
 		defaultOptions: {
 			queries: {
 				staleTime: 60 * 1000 * 5,
@@ -46,7 +47,7 @@ export default function RootLayout({
 				refetchOnWindowFocus: false,
 			},
 		},
-	});
+	}));
 
 	return (
 		<>
