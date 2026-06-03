@@ -79,7 +79,7 @@ export default function CreatePlan() {
 	};
 
 	return (
-		<div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800">
+		<div className="min-h-screen bg-background">
 			<main className="max-w-3xl mx-auto py-12 sm:px-6 lg:px-8">
 				<form onSubmit={handleSubmit}>
 					<Card>
@@ -89,8 +89,8 @@ export default function CreatePlan() {
 								Set up your new financial plan with Cashwise
 							</CardDescription>
 						</CardHeader>
-						<CardContent className="space-y-6">
-							<div className="space-y-2">
+						<CardContent className="flex flex-col gap-6">
+							<div className="flex flex-col gap-2">
 								<Label htmlFor="plan-name">Plan name</Label>
 								<Input
 									id="plan-name"
@@ -101,7 +101,7 @@ export default function CreatePlan() {
 								/>
 							</div>
 
-							<div className="space-y-2">
+							<div className="flex flex-col gap-2">
 								<Label htmlFor="plan-description">Description (optional)</Label>
 								<Textarea
 									id="plan-description"
@@ -114,11 +114,11 @@ export default function CreatePlan() {
 							<RadioGroup
 								value={planType}
 								onValueChange={setPlanType}
-								className="flex flex-col space-y-1 "
+								className="flex flex-col gap-1 "
 								defaultValue="comfortable"
 							>
 								<Label>Plan Type</Label>
-								<div className="flex items-center space-x-2">
+								<div className="flex items-center gap-2">
 									<RadioGroupItem
 										value="personal"
 										id="personal"
@@ -126,7 +126,7 @@ export default function CreatePlan() {
 									/>
 									<Label htmlFor="personal">Personal</Label>
 								</div>
-								<div className="flex items-center space-x-2">
+								<div className="flex items-center gap-2">
 									<RadioGroupItem
 										value="family"
 										id="family"
@@ -134,7 +134,7 @@ export default function CreatePlan() {
 									/>
 									<Label htmlFor="family">Family</Label>
 								</div>
-								<div className="flex items-center space-x-2">
+								<div className="flex items-center gap-2">
 									<RadioGroupItem
 										value="business"
 										id="business"
@@ -144,7 +144,7 @@ export default function CreatePlan() {
 								</div>
 							</RadioGroup>
 
-							<div className="space-y-2">
+							<div className="flex flex-col gap-2">
 								<Label>Plan Visibility</Label>
 								<Select
 									value={planVisibility}
@@ -170,7 +170,7 @@ export default function CreatePlan() {
 								</Select>
 							</div>
 
-							<div className="space-y-2">
+							<div className="flex flex-col gap-2">
 								<Label>Plan Duration</Label>
 								<Select value={planDuration} onValueChange={setPlanDuration}>
 									<SelectTrigger>
@@ -187,7 +187,7 @@ export default function CreatePlan() {
 								</Select>
 							</div>
 
-							<div className="space-y-2">
+							<div className="flex flex-col gap-2">
 								<Label htmlFor="initial-budget">Initial Budget</Label>
 								<div className="relative">
 									<span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
@@ -204,7 +204,7 @@ export default function CreatePlan() {
 								</div>
 							</div>
 
-							<div className="flex items-center space-x-2">
+							<div className="flex items-center gap-2">
 								<Switch
 									id="auto-save"
 									checked={autoSave}

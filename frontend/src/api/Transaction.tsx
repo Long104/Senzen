@@ -12,8 +12,7 @@ type FetchDeleteTransactionResponse = Partial<transaction> & {
 export const fetchUser = async (id: number | undefined) => {
 	try {
 		const response = await fetchGet(`plan/${id}`);
-		console.log("damn this is res", response);
-		// return response.Plans;
+		return response;
 		return response;
 	} catch (error) {
 		console.log("Error fetching plans:", error);
@@ -43,7 +42,6 @@ export async function fetchDeleteTransaction(
 		}
 
 		const text = await res.text();
-		console.log(text);
 		return text ? JSON.parse(text) : null;
 		// return await res.json(); // Or `return { success: true };` if no JSON response
 	} catch (error) {

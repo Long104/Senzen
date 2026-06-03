@@ -22,23 +22,6 @@ export async function fetchGet(url: string) {
 		return await res.json();
 	} catch (error) {
 		console.error(error);
-		return <div>Error loading data</div>;
+			throw new Error(`Failed to fetch ${url}: ${error}`);
 	}
-	// }
-
-	// const result = await getData();
-	// console.log(result);
-
-	// return (
-	// 	<div>
-	// 		{/* {result.map((res: { name: string; email: string }) => ( */}
-	// 		{/* 	<div key={res.email}>{res.name}</div> */}
-	// 		{/* ))} */}
-	//
-	// 		{result.map((res: any, index: number) => (
-	// 			<div key={index}>{res.amount}</div>
-	// 		))}
-	// 	</div>
-	// );
-	// return <div>{jwt ? <p>JWT: {jwt.value}</p> : <p>No JWT found</p>}</div>;
 }

@@ -43,7 +43,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 	const logout = async () => {
 		try {
 			const response = await fetch(
-				process.env.NEXT_PUBILC_BACKEND + "/logout",
+				process.env.NEXT_PUBLIC_BACKEND + "/logout",
 				{
 					method: "POST",
 					credentials: "include", // Include cookies in the request
