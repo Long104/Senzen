@@ -1,0 +1,81 @@
+name: Terraform CI/CD
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "infra/terraform/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - "infra/terraform/**"
+
+jobs:
+  terraform:
+    name: Terraform Plan & Apply
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra/terraform
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          cli_config_credentials_token: ${{ secrets.TFC_API_TOKEN }}
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Build Worker bundle
+        id: build
+        if: hashFiles('backend/worker/package.json') != ''
+        working-directory: backend/worker
+        run: |
+          npm ci
+          npm run build
+
+      - name: Terraform Plan
+        id: plan
+        if: github.event_name == 'pull_request'
+        run: terraform plan -no-color -input=false
+        env:
+          TF_VAR_vercel_api_token:      ${{ secrets.VERCEL_API_TOKEN }}
+          TF_VAR_cloudflare_api_token:  ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          TF_VAR_db_host:               ${{ secrets.DB_HOST }}
+          TF_VAR_db_user:               ${{ secrets.DB_USER }}
+          TF_VAR_db_password:           ${{ secrets.DB_PASSWORD }}
+          TF_VAR_jwt_secret_key:        ${{ secrets.JWT_SECRET_KEY }}
+          TF_VAR_google_client_id:      ${{ secrets.GOOGLE_CLIENT_ID }}
+          TF_VAR_google_client_secret:  ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          TF_VAR_github_client_id:      ${{ secrets.GH_CLIENT_ID }}
+          TF_VAR_github_client_secret:  ${{ secrets.GH_CLIENT_SECRET }}
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply -auto-approve -input=false
+        env:
+          TF_VAR_vercel_api_token:      ${{ secrets.VERCEL_API_TOKEN }}
+          TF_VAR_cloudflare_api_token:  ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          TF_VAR_db_host:               ${{ secrets.DB_HOST }}
+          TF_VAR_db_user:               ${{ secrets.DB_USER }}
+          TF_VAR_db_password:           ${{ secrets.DB_PASSWORD }}
+          TF_VAR_jwt_secret_key:        ${{ secrets.JWT_SECRET_KEY }}
+          TF_VAR_google_client_id:      ${{ secrets.GOOGLE_CLIENT_ID }}
+          TF_VAR_google_client_secret:  ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          TF_VAR_github_client_id:      ${{ secrets.GH_CLIENT_ID }}
+          TF_VAR_github_client_secret:  ${{ secrets.GH_CLIENT_SECRET }}
