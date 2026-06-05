@@ -11,27 +11,20 @@ tfc_workspace    = "senzen-production"
 # Vercel
 vercel_api_token = "vercel-api-token-here"
 
-# Cloudflare
-cloudflare_api_token           = "cloudflare-api-token-here"
-cloudflare_account_id          = "your-cloudflare-account-id"
-cloudflare_workers_script_name = "senzen-backend"
-# Optional: bind a custom domain to the Worker
-# cloudflare_zone_id       = "your-zone-id"
-# cloudflare_custom_domain = "api.example.com"
-
 # GitHub
 github_repo = "Long104/Senzen"
 
-# Supabase PostgreSQL
-db_host     = "db.supabase-ref.supabase.co"
-db_port     = "5432"
-db_user     = "postgres"
-db_password = "your-supabase-db-password"
-db_name     = "postgres"
+# Backend (SnapDeploy)
+# Set this after creating the container on SnapDeploy dashboard.
+# Format: https://<container-name>.containers.snapdeploy.dev
+snapdeploy_backend_url = "https://senzen-backend.containers.snapdeploy.dev"
 
-# Auth & Security
-jwt_secret_key       = "your-random-jwt-secret"
-google_client_id     = "your-google-client-id"
-google_client_secret = "your-google-client-secret"
-github_client_id     = "your-github-client-id"
-github_client_secret = "your-github-client-secret"
+# ─────────────────────────────────────────────────────────────
+# Backend env vars are set in the SnapDeploy dashboard, NOT
+# here. See backend-deploy.yml for the full list:
+#   DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME
+#   jwtSecretKey
+#   GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+#   GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET
+#   FRONTEND_URL
+# ─────────────────────────────────────────────────────────────
