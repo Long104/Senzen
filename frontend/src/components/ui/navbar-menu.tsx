@@ -45,29 +45,22 @@ export function NavigationMenuDemo() {
 						</NavigationMenuLink>
 					</Link>
 				</NavigationMenuItem>
-				<NavigationMenuItem>
-					<Link href="/viewPlan" legacyBehavior passHref>
-						<NavigationMenuLink className={navigationMenuTriggerStyle()}>
-							View Plan
-						</NavigationMenuLink>
-					</Link>
-				</NavigationMenuItem>
-				<NavigationMenuItem>
-					<NavigationMenuTrigger>Pricing</NavigationMenuTrigger>
-					<NavigationMenuContent>
-						<ul className="grid w-[400px] gap-3 p-2 md:w-[400px] md:grid-cols-1 lg:w-[400px]">
-							{pricingItems.map((item) => (
-								<ListItem
-									key={item.title}
-									title={item.title}
-									href={item.href}
-								>
-									{item.description}
-								</ListItem>
-							))}
-						</ul>
-					</NavigationMenuContent>
-				</NavigationMenuItem>
+				{/* <NavigationMenuItem> */}
+					{/* <NavigationMenuTrigger>Pricing</NavigationMenuTrigger> */}
+					{/* <NavigationMenuContent> */}
+					{/* 	<ul className="grid w-[400px] gap-3 p-2 md:w-[400px] md:grid-cols-1 lg:w-[400px]"> */}
+					{/* 		{pricingItems.map((item) => ( */}
+					{/* 			<ListItem */}
+					{/* 				key={item.title} */}
+					{/* 				title={item.title} */}
+					{/* 				href={item.href} */}
+					{/* 			> */}
+					{/* 				{item.description} */}
+					{/* 			</ListItem> */}
+					{/* 		))} */}
+					{/* 	</ul> */}
+					{/* </NavigationMenuContent> */}
+				{/* </NavigationMenuItem> */}
 				<NavigationMenuItem>
 					<ProfileDropdown />
 				</NavigationMenuItem>
