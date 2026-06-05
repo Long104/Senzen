@@ -24,8 +24,8 @@ resource "vercel_project_environment_variable" "frontend_url" {
 }
 
 resource "vercel_project_environment_variable" "backend_url" {
-  project_id = vercel_project.cashwise.id
-  key        = "NEXT_PUBLIC_BACKEND"
-  value = var.cloudflare_custom_domain != "" ? "https://${var.cloudflare_custom_domain}/api" : "https://${var.cloudflare_workers_script_name}.${var.cloudflare_account_id}.workers.dev/api"
+  project_id  = vercel_project.cashwise.id
+  key         = "NEXT_PUBLIC_BACKEND"
+  value       = "${var.snapdeploy_backend_url}/api"
   environment = ["production"]
 }
