@@ -1,0 +1,66 @@
+# =============================================================
+# Senzen — Render Blueprint
+# =============================================================
+# Render reads this file when you connect the repo (Dashboard →
+# New → Blueprint → select this repo). It creates:
+#   • senzen-api   — Go/Fiber backend, free plan
+#
+# Free plan = 512 MB RAM, 0.1 vCPU, sleeps after 15 min idle.
+# Auto-deploys on every push to main.
+#
+# Sensitive env vars are marked `sync: false` — you set the
+# values once in the Render dashboard, and they stay out of git.
+# =============================================================
+
+services:
+  - type: web
+    name: senzen-api
+    runtime: go
+    plan: free
+    region: singapore
+
+    rootDir: backend
+    buildCommand: go build -ldflags="-s -w" -o main .
+    startCommand: ./main
+    healthCheckPath: /health
+    autoDeploy: true
+
+    # ─────────────────────────────────────────────────────────
+    # Public env vars (committed, no secrets)
+    # ─────────────────────────────────────────────────────────
+    envVars:
+      - key: PORT
+        value: "10000" # Render sets this; pinned for clarity
+      - key: DB_PORT
+        value: "5432"
+      - key: DB_USER
+        value: postgres
+      - key: DB_NAME
+        value: postgres
+      - key: FRONTEND_URL
+        value: https://senzen.pantorn.site
+      - key: BACKEND_URL
+        value: https://api.senzen.pantorn.site
+      - key: GO_ENV
+        value: production
+
+    # ─────────────────────────────────────────────────────────
+    # Secrets — set values in the Render dashboard, NOT here
+    # ─────────────────────────────────────────────────────────
+      - key: DB_HOST
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: jwtSecretKey
+        generateValue: true
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GITHUB_CLIENT_ID
+        sync: false
+      - key: GITHUB_CLIENT_SECRET
+        sync: false
+
+    customDomains:
+      - name: api.senzen.pantorn.site

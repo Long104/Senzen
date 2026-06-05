@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "infra/terraform/**"
+      - "render.yaml"
   pull_request:
     branches: [main]
     paths:
@@ -44,10 +45,14 @@ jobs:
         if: github.event_name == 'pull_request'
         run: terraform plan -no-color -input=false
         env:
-          TF_VAR_vercel_api_token: ${{ secrets.VERCEL_API_TOKEN }}
+          TF_VAR_vercel_api_token:    ${{ secrets.VERCEL_API_TOKEN }}
+          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_cloudflare_zone_id:   ${{ secrets.CLOUDFLARE_ZONE_ID }}
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve -input=false
         env:
-          TF_VAR_vercel_api_token: ${{ secrets.VERCEL_API_TOKEN }}
+          TF_VAR_vercel_api_token:    ${{ secrets.VERCEL_API_TOKEN }}
+          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_cloudflare_zone_id:   ${{ secrets.CLOUDFLARE_ZONE_ID }}

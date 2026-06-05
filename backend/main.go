@@ -2,11 +2,9 @@ package main
 
 import (
 	"log"
-	// "os"
+	"os"
 
-	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
-	// jwtware "github.com/gofiber/jwt/v3"
 	"github.com/joho/godotenv"
 	"github.com/long104/CashWise/config"
 	"github.com/long104/CashWise/middleware"
@@ -14,47 +12,36 @@ import (
 )
 
 func main() {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatalf("Some error occurred. Err: %s", err)
+	// godotenv is a dev convenience only — in production (Render)
+	// env vars come from the platform and .env doesn't exist.
+	// Log a warning instead of crashing if .env is missing.
+	if err := godotenv.Load(".env"); err != nil {
+		log.Printf("[startup] no .env file found (expected in production): %v", err)
 	}
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" // local dev default; Render sets PORT=10000
+	}
+
 	config.ConnectDatabase()
 	app := fiber.New()
 	api := app.Group("/api")
 
-
 	app.Use(middleware.CORSMiddleware())
-
 
 	app.Get("/health", func(c *fiber.Ctx) error {
 		return c.SendString("health check ok")
 	})
 
-	app.Use("/ws", func(c *fiber.Ctx) error {
-		// IsWebSocketUpgrade returns true if the client
-		// requested upgrade to the WebSocket protocol.
-		if websocket.IsWebSocketUpgrade(c) {
-			c.Locals("allowed", true)
-			return c.Next()
-		}
-		return fiber.ErrUpgradeRequired
-	})
-
-	// routes.WsRoutes(app)
-	routes.SetupOAuthRoutes(api)
-	routes.SetupAuthRoutes(api)
-
-	// app.Use(jwtware.New(jwtware.Config{
-	// 	SigningKey: []byte(os.Getenv("jwtSecretKey")),
-	// }))
-
-	// app.Use("/admin", middleware.checkMiddleware)
-	// app.Use("/books", AuthRequired)
 	app.Get("/validate-token", middleware.ValidateToken)
 
+	routes.SetupOAuthRoutes(api)
+	routes.SetupAuthRoutes(api)
 	routes.SetupRoutes(api)
 
-	// setupRoutes(app)
-
-	app.Listen(":8080")
+	log.Printf("[startup] listening on :%s", port)
+	if err := app.Listen(":" + port); err != nil {
+		log.Fatalf("[startup] server failed: %v", err)
+	}
 }

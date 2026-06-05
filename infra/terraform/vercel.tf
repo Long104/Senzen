@@ -17,15 +17,17 @@ resource "vercel_project" "cashwise" {
 }
 
 resource "vercel_project_environment_variable" "frontend_url" {
-  project_id  = vercel_project.cashwise.id
-  key         = "NEXT_PUBLIC_BASE_URL"
-  value       = "https://${vercel_project.cashwise.name}.vercel.app"
-  environment = ["production"]
+  project_id = vercel_project.cashwise.id
+  key        = "NEXT_PUBLIC_BASE_URL"
+  value      = "https://${var.frontend_domain}"
+  target     = ["production"]
+  sensitive  = false
 }
 
 resource "vercel_project_environment_variable" "backend_url" {
-  project_id  = vercel_project.cashwise.id
-  key         = "NEXT_PUBLIC_BACKEND"
-  value       = "${var.snapdeploy_backend_url}/api"
-  environment = ["production"]
+  project_id = vercel_project.cashwise.id
+  key        = "NEXT_PUBLIC_BACKEND"
+  value      = "https://${var.backend_subdomain}.${var.frontend_domain}/api"
+  target     = ["production"]
+  sensitive  = false
 }

@@ -4,7 +4,6 @@ import (
 	"log"
 	"os"
 
-  // "fmt"
 	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
@@ -18,15 +17,23 @@ type Config struct {
 
 var AppConfig Config
 
+// backendURL returns the BACKEND_URL env var, or localhost for dev.
+// OAuth providers will redirect back to <backendURL>/<provider>_callback.
+func backendURL() string {
+	if u := os.Getenv("BACKEND_URL"); u != "" {
+		return u
+	}
+	return "http://localhost:8080"
+}
+
 func GoogleConfig() oauth2.Config {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatalf("Some error occured. Err: %s", err)
+	// godotenv is a dev convenience only — log a warning if missing.
+	if err := godotenv.Load(".env"); err != nil {
+		log.Printf("[config] no .env file found (expected in production): %v", err)
 	}
 
 	AppConfig.GoogleLoginConfig = oauth2.Config{
-		RedirectURL:  "http://localhost:8080/google_callback",
-    // RedirectURL:  "http://localhost:3000/",
+		RedirectURL:  backendURL() + "/google_callback",
 		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
 		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
 		Scopes: []string{
@@ -40,17 +47,13 @@ func GoogleConfig() oauth2.Config {
 }
 
 func GithubConfig() oauth2.Config {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatalf("Some error occured. Err: %s", err)
+	if err := godotenv.Load(".env"); err != nil {
+		log.Printf("[config] no .env file found (expected in production): %v", err)
 	}
 
 	AppConfig.GitHubLoginConfig = oauth2.Config{
-		RedirectURL: "http://localhost:8080/github_callback",
-    // RedirectURL:  "http://localhost:3000/",
-		ClientID:    os.Getenv("GITHUB_CLIENT_ID"),
-		// RedirectURL: fmt.Sprintf(
-		// "https://github.com/login/oauth/authorize?scope=user:repo&client_id=%s&redirect_uri=%s", os.Getenv("GITHUB_CLIENT_ID"), "http://localhost:8080/github_callback"),
+		RedirectURL:  backendURL() + "/github_callback",
+		ClientID:     os.Getenv("GITHUB_CLIENT_ID"),
 		ClientSecret: os.Getenv("GITHUB_CLIENT_SECRET"),
 		Scopes:       []string{"user", "repo"},
 		Endpoint:     github.Endpoint,
