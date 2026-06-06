@@ -27,7 +27,9 @@ resource "vercel_project_environment_variable" "frontend_url" {
 resource "vercel_project_environment_variable" "backend_url" {
   project_id = vercel_project.cashwise.id
   key        = "NEXT_PUBLIC_BACKEND"
-  value      = "https://${var.backend_subdomain}.${var.frontend_domain}/api"
-  target     = ["production"]
-  sensitive  = false
+  # Empty string so the frontend builds relative URLs like "/api/users"
+  # which Vercel rewrites to https://senzen-api.onrender.com/api/users
+  value     = ""
+  target    = ["production"]
+  sensitive = false
 }

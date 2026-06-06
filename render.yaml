@@ -46,7 +46,10 @@ services:
       - key: FRONTEND_URL
         value: https://senzen.pantorn.site
       - key: BACKEND_URL
-        value: https://senzen-api.pantorn.site
+        # Public URL the user sees — used by OAuth providers as the
+        # callback redirect base. Vercel rewrites /google_callback to
+        # Render's /api/google_callback server-side.
+        value: https://senzen.pantorn.site
       - key: GO_ENV
         value: production
 

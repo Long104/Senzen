@@ -30,11 +30,13 @@ func main() {
 
 	app.Use(middleware.CORSMiddleware())
 
-	app.Get("/health", func(c *fiber.Ctx) error {
+	// All routes live under /api so the Vercel rewrite
+	// (/:path*  →  senzen-api.onrender.com/api/:path*) lines up.
+	api.Get("/health", func(c *fiber.Ctx) error {
 		return c.SendString("health check ok")
 	})
 
-	app.Get("/validate-token", middleware.ValidateToken)
+	api.Get("/validate-token", middleware.ValidateToken)
 
 	routes.SetupOAuthRoutes(api)
 	routes.SetupAuthRoutes(api)

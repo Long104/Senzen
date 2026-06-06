@@ -9,31 +9,16 @@ output "vercel_project_id" {
 }
 
 output "frontend_url" {
-  description = "Public frontend URL (custom domain)"
+  description = "Public frontend URL (custom domain) — also the only public URL for the backend (Vercel rewrites /<path> to Render /api/<path>)"
   value       = "https://${var.frontend_domain}"
 }
 
-output "backend_url" {
-  description = "Public backend URL (custom domain + /api prefix)"
-  value       = "https://${var.backend_subdomain}.${var.frontend_domain}"
-}
-
-output "backend_api_url" {
-  description = "Backend API base path the frontend calls"
-  value       = "https://${var.backend_subdomain}.${var.frontend_domain}/api"
-}
-
 output "render_onrender_url" {
-  description = "Render's default onrender.com URL (DNS target in Cloudflare)"
+  description = "Render's default onrender.com URL — backend is reached through this only via the Vercel rewrite, not directly"
   value       = "https://${var.render_service_name}.onrender.com"
 }
 
 output "cloudflare_record_senzen" {
   description = "Cloudflare CNAME record for the frontend"
   value       = cloudflare_record.senzen_frontend.hostname
-}
-
-output "cloudflare_record_api" {
-  description = "Cloudflare CNAME record for the backend"
-  value       = cloudflare_record.senzen_backend.hostname
 }
