@@ -63,9 +63,9 @@ variable "frontend_domain" {
 }
 
 variable "backend_subdomain" {
-  description = "Subdomain label for the backend (relative to frontend_domain). Final URL: <backend_subdomain>.<frontend_domain>"
+  description = "Subdomain label for the backend (one level deep under cloudflare_zone_name). Must be ONE level deep to be covered by Cloudflare Universal SSL. Final URL: <backend_subdomain>.<cloudflare_zone_name>"
   type        = string
-  default     = "api"
+  default     = "senzen-api"
 }
 
 # ─────────────────────────────────────────────────────────────

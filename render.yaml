@@ -8,6 +8,12 @@
 # Free plan = 512 MB RAM, 0.1 vCPU, sleeps after 15 min idle.
 # Auto-deploys on every push to main.
 #
+# NOTE on custom domains: render.yaml does NOT support custom
+# domains on the free plan. The service runs at
+#   https://senzen-api.onrender.com
+# and Cloudflare proxies the public URL (senzen-api.pantorn.site)
+# to it via "Full" SSL mode. See infra/terraform/cloudflare.tf.
+#
 # Sensitive env vars are marked `sync: false` — you set the
 # values once in the Render dashboard, and they stay out of git.
 # =============================================================
@@ -40,7 +46,7 @@ services:
       - key: FRONTEND_URL
         value: https://senzen.pantorn.site
       - key: BACKEND_URL
-        value: https://api.senzen.pantorn.site
+        value: https://senzen-api.pantorn.site
       - key: GO_ENV
         value: production
 
@@ -61,6 +67,3 @@ services:
         sync: false
       - key: GITHUB_CLIENT_SECRET
         sync: false
-
-    customDomains:
-      - name: api.senzen.pantorn.site
