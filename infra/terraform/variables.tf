@@ -1,14 +1,3 @@
-variable "tfc_organization" {
-  description = "Terraform Cloud organization name"
-  type        = string
-}
-
-variable "tfc_workspace" {
-  description = "Terraform Cloud workspace name"
-  type        = string
-  default     = "senzen-production"
-}
-
 # ─────────────────────────────────────────────────────────────
 # Vercel (frontend)
 # ─────────────────────────────────────────────────────────────

@@ -4,6 +4,11 @@
 #   cp terraform.tfvars.example terraform.tfvars
 # ============================================================
 # terraform.tfvars is .gitignore'd — keep secrets out of git.
+#
+# If you are using Terraform Cloud, set the variables in the
+# workspace Variables tab instead — Terraform Cloud will pass
+# them in, and terraform.tfvars is ignored. The two are NOT
+# loaded together.
 # ============================================================
 
 # Terraform Cloud
@@ -12,6 +17,8 @@ tfc_workspace    = "senzen-production"
 
 # ─────────────────────────────────────────────────────────────
 # Vercel (frontend)
+# Get token from: https://vercel.com/account/tokens
+#   Scope: Full Account (or limited to the senzen project)
 # ─────────────────────────────────────────────────────────────
 vercel_api_token = "vercel-api-token-here"
 
@@ -35,8 +42,6 @@ github_repo = "Long104/Senzen"
 # Public domains — defaults shown, override only if different
 # ─────────────────────────────────────────────────────────────
 # frontend_domain    = "senzen.pantorn.site"
-# backend_subdomain  = "api"
-# render_service_name = "senzen-api"
 # vercel_cname_target = "cname.vercel-dns.com"
 
 # ─────────────────────────────────────────────────────────────
@@ -46,16 +51,21 @@ github_repo = "Long104/Senzen"
 # (or in render.yaml with sync: false).
 #
 # Render dashboard → senzen-api → Environment:
-#   DB_HOST            = abcdefgh.supabase.co
-#   DB_PORT            = 5432
-#   DB_USER            = postgres
-#   DB_NAME            = postgres
-#   DB_PASSWORD        = <from supabase dashboard>
-#   jwtSecretKey       = <openssl rand -base64 32>
-#   GOOGLE_CLIENT_ID     = <from Google Cloud Console>
-#   GOOGLE_CLIENT_SECRET = <from Google Cloud Console>
-#   GITHUB_CLIENT_ID     = <from GitHub OAuth app>
-#   GITHUB_CLIENT_SECRET = <from GitHub OAuth app>
-#   FRONTEND_URL         = https://senzen.pantorn.site
-#   BACKEND_URL          = https://api.senzen.pantorn.site
+#   DB_HOST               = aws-0-ap-southeast-1.pooler.supabase.com
+#   DB_PORT               = 5432
+#   DB_USER               = postgres.bqkveselhvqmknnvwgfx
+#   DB_NAME               = postgres
+#   DB_PASSWORD           = <from supabase dashboard>
+#   jwtSecretKey          = <openssl rand -base64 32>
+#   GOOGLE_CLIENT_ID      = <from Google Cloud Console>
+#   GOOGLE_CLIENT_SECRET  = <from Google Cloud Console>
+#   GITHUB_CLIENT_ID      = <from GitHub OAuth app>
+#   GITHUB_CLIENT_SECRET  = <from GitHub OAuth app>
+#   FRONTEND_URL          = https://senzen.pantorn.site
+#   BACKEND_URL           = https://senzen.pantorn.site  (path-based — no /api)
+#   GO_ENV                = production
+#
+# OAuth provider dashboards (callback URLs):
+#   Google:  https://senzen.pantorn.site/google_callback
+#   GitHub:  https://senzen.pantorn.site/github_callback
 # ─────────────────────────────────────────────────────────────

@@ -15,7 +15,7 @@ resource "cloudflare_record" "senzen_frontend" {
   zone_id = var.cloudflare_zone_id
   name    = split(".", var.frontend_domain)[0] # "senzen"
   type    = "CNAME"
-  value   = var.vercel_cname_target
+  content = var.vercel_cname_target
   proxied = false
   comment = "Senzen frontend → Vercel (DNS-only, Vercel issues its own cert)"
 }

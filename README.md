@@ -1,7 +1,8 @@
 # Senzen
 
 
-**Your intelligent companion for effortless money management.**
+**Your SenZen intelligent companion for effortless money management.**
+
 
 ---
 

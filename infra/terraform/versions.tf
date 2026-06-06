@@ -1,9 +1,9 @@
 terraform {
   cloud {
-    organization = var.tfc_organization
+    organization = "openzen"
 
     workspaces {
-      name = var.tfc_workspace
+      name = "senzen-production"
     }
   }
 
