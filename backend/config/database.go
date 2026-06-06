@@ -18,14 +18,13 @@ var DB *gorm.DB
 // ConnectDatabase initializes the database connection.
 func ConnectDatabase() {
 
-	// Set up the DSN and GORM logger
-	// sslmode=require is needed for Supabase (and any managed Postgres
-	// that enforces TLS). The local dev setup also works with require
-	// if you trust the local server; switch to "disable" only if your
-	// local Postgres rejects TLS.
+	sslmode := os.Getenv("DB_SSLMODE")
+	if sslmode == "" {
+		sslmode = "require"
+	}
 	dsn := fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%s sslmode=require TimeZone=Asia/Bangkok",
-		os.Getenv("DB_HOST"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"), os.Getenv("DB_PORT"),
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=Asia/Bangkok",
+		os.Getenv("DB_HOST"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"), os.Getenv("DB_PORT"), sslmode,
 	)
 
 	newLogger := logger.New(
