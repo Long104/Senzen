@@ -8,11 +8,13 @@
 # Free plan = 512 MB RAM, 0.1 vCPU, sleeps after 15 min idle.
 # Auto-deploys on every push to main.
 #
-# NOTE on custom domains: render.yaml does NOT support custom
-# domains on the free plan. The service runs at
+# NOTE on routing: This service runs at
 #   https://senzen-api.onrender.com
-# and Cloudflare proxies the public URL (senzen-api.pantorn.site)
-# to it via "Full" SSL mode. See infra/terraform/cloudflare.tf.
+# but is exposed publicly as
+#   https://senzen.pantorn.site/api/...
+# via a Vercel catch-all rewrite (see frontend/vercel.json).
+# No DNS record for the backend exists — Vercel proxies the
+# path. No custom domain is configured on Render.
 #
 # Sensitive env vars are marked `sync: false` — you set the
 # values once in the Render dashboard, and they stay out of git.
@@ -28,7 +30,7 @@ services:
     rootDir: backend
     buildCommand: go build -ldflags="-s -w" -o main .
     startCommand: ./main
-    healthCheckPath: /health
+    healthCheckPath: /api/health
     autoDeploy: true
 
     # ─────────────────────────────────────────────────────────
@@ -40,7 +42,7 @@ services:
       - key: DB_PORT
         value: "5432"
       - key: DB_USER
-        value: postgres
+        value: postgres.bqkveselhvqmknnvwgfx
       - key: DB_NAME
         value: postgres
       - key: FRONTEND_URL
