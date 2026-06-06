@@ -6,9 +6,9 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
-	"github.com/long104/CashWise/config"
-	"github.com/long104/CashWise/middleware"
-	"github.com/long104/CashWise/routes"
+	"github.com/long104/Senzen/config"
+	"github.com/long104/Senzen/middleware"
+	"github.com/long104/Senzen/routes"
 )
 
 func main() {

@@ -3,7 +3,7 @@ import "@/app/globals.css";
 import { Navbar } from "@/components/example/navbar";
 
 export const metadata: Metadata = {
-	title: "CashWise",
+	title: "Senzen",
 	description: "Smart budgeting and financial planning made simple",
 };
 

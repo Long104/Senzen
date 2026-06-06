@@ -63,8 +63,8 @@
 1. **Clone the repository:**
  
    ```bash
-   git clone https://github.com/Long104/CashWise.git
-   cd CashWise
+   git clone https://github.com/Long104/Senzen.git
+   cd Senzen
    ```
    
 2. **Set up environment variables:**

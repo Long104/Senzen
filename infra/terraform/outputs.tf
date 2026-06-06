@@ -1,11 +1,11 @@
 output "vercel_url" {
   description = "Vercel frontend deployment URL (auto-assigned)"
-  value       = "https://${vercel_project.cashwise.name}.vercel.app"
+  value       = "https://${vercel_project.senzen.name}.vercel.app"
 }
 
 output "vercel_project_id" {
   description = "Vercel project ID"
-  value       = vercel_project.cashwise.id
+  value       = vercel_project.senzen.id
 }
 
 output "frontend_url" {

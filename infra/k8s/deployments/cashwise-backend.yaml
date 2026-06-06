@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cashwise-be-deployment
+  name: senzen-be-deployment
   namespace: default
   labels:
     app.kubernetes.io/name: be
@@ -10,17 +10,17 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: be
-      # app: cashwise-frontend
+      # app: senzen-frontend
   template:
     metadata:
-      name: cashwise-backend-pods
+      name: senzen-backend-pods
       labels:
-        # app: cashwise-frontend
+        # app: senzen-frontend
         app.kubernetes.io/name: be
     spec:
       containers:
-        - name: cashwise-backend
-          image: long104/cashwise-backend:lastest
+        - name: senzen-backend
+          image: long104/senzen-backend:lastest
           # imagePullPolicy: IfNotPresent
           imagePullPolicy: Always
           ports:
@@ -39,7 +39,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: cashwise-be-service
+  name: senzen-be-service
   namespace: default
 spec:
   # type: NodePort

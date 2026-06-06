@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/long104/CashWise/models" // Adjust this import path to match your project structure
+	"github.com/long104/Senzen/models" // Adjust this import path to match your project structure
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

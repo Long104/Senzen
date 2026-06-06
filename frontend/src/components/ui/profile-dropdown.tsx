@@ -154,7 +154,7 @@ export function ProfileDropdown({ classProfile }: { classProfile?: string }) {
 						<DropdownMenuSeparator />
 						<DropdownMenuLabel className="font-normal">
 							<p className="text-xs font-medium leading-none text-muted-foreground">
-								CashWise
+								Senzen
 							</p>
 						</DropdownMenuLabel>
 						<DropdownMenuGroup>

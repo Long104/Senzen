@@ -11,7 +11,7 @@ import (
 	// "github.com/golang-jwt/jwt/v4"
 	// "golang.org/x/crypto/bcrypt"
 
-	"github.com/long104/CashWise/models"
+	"github.com/long104/Senzen/models"
 	"gorm.io/gorm"
 )
 

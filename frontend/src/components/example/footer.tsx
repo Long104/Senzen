@@ -26,9 +26,9 @@ export const Footer = () => {
 								height: "auto",
 							}}
 						/>
-						CashWise
+						Senzen
 					</div>
-					<br />© 2023 CashWise. All rights reserved.
+					<br />© 2023 Senzen. All rights reserved.
 				</div>
 				<div className="grid grid-cols-3">
 					<CardHeader>

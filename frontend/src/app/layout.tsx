@@ -18,7 +18,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-	title: "CashWise",
+	title: "Senzen",
 	description: "Smart budgeting and financial planning made simple",
 };
 

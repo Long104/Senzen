@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/long104/CashWise/controllers"
+	"github.com/long104/Senzen/controllers"
 )
 
 func SetupAuthRoutes(app fiber.Router) {

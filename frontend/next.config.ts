@@ -27,7 +27,7 @@ const nextConfig: NextConfig = {
 	// 	return [
 	// 		{
 	// 			source: "/:path*",
-	// 			destination: "https://cashwise.localhost/:path*",
+	// 			destination: "https://senzen.localhost/:path*",
 	// 		},
 	// 	];
 	// },

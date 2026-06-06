@@ -6,7 +6,7 @@ import (
 
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
-	// "github.com/long104/CashWise/middleware"
+	// "github.com/long104/Senzen/middleware"
 )
 
 type WebSocketHub struct {

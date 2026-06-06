@@ -1,4 +1,4 @@
-resource "vercel_project" "cashwise" {
+resource "vercel_project" "senzen" {
   name      = var.vercel_project_name
   framework = "nextjs"
 
@@ -17,19 +17,17 @@ resource "vercel_project" "cashwise" {
 }
 
 resource "vercel_project_environment_variable" "frontend_url" {
-  project_id = vercel_project.cashwise.id
+  project_id = vercel_project.senzen.id
   key        = "NEXT_PUBLIC_BASE_URL"
   value      = "https://${var.frontend_domain}"
   target     = ["production"]
   sensitive  = false
 }
 
-resource "vercel_project_environment_variable" "backend_url" {
-  project_id = vercel_project.cashwise.id
-  key        = "NEXT_PUBLIC_BACKEND"
-  # Empty string so the frontend builds relative URLs like "/api/users"
-  # which Vercel rewrites to https://senzen-api.onrender.com/api/users
-  value     = ""
-  target    = ["production"]
-  sensitive = false
-}
+# NOTE: NEXT_PUBLIC_BACKEND is set to "" in the Vercel dashboard
+# (Settings → Environment Variables). It's not in this Terraform
+# because path-based routing means the frontend uses relative URLs.
+# Set it in the dashboard:
+#   Key:   NEXT_PUBLIC_BACKEND
+#   Value: (empty)
+#   Target: Production

@@ -8,8 +8,8 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/long104/CashWise/config"
-	"github.com/long104/CashWise/models"
+	"github.com/long104/Senzen/config"
+	"github.com/long104/Senzen/models"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -77,7 +77,7 @@ func LoginUser(c *fiber.Ctx) error {
 		Name:  "jwt",
 		Value: t,
 		Path:  "/",
-		// Domain:  "cashwise.com",
+		// Domain:  "senzen.pantorn.site",
 		Expires: time.Now().Add(time.Hour * 72),
 		// HTTPOnly: true,
 		// Secure:   false,

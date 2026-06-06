@@ -26,7 +26,7 @@ export function Navbar() {
 					// style={{ width: '100%', height: 'auto' }} // optional
 				/>
        <Link href="/"> 
-				CashWise
+				Senzen
         </Link>
 			</div>
 			<ul className="flex child:pl-6">

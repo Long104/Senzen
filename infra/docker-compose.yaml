@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: mypassword
     volumes:
-      - postgres_CashWise:/var/lib/postgresql/data
+      - postgres_Senzen:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     restart: unless-stopped
@@ -25,4 +25,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  postgres_CashWise:
+  postgres_Senzen:

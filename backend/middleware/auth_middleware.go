@@ -22,8 +22,8 @@ func checkMiddleware(c *fiber.Ctx) error {
 
 func AuthRequired(c *fiber.Ctx) error {
 	cookie := c.Cookies("jwt")
-	// token, err := jwt.ParseWithClaims(cookie, &jwt.RegisteredClaims{Issuer: "CashWise", ExpiresAt: jwt.NewNumericDate(time.Now().Add(1 * time.Hour))}, func(token *jwt.Token) (interface{}, error) {
-	token, err := jwt.ParseWithClaims(cookie, &jwt.RegisteredClaims{Issuer: "CashWise"}, func(token *jwt.Token) (interface{}, error) {
+	// token, err := jwt.ParseWithClaims(cookie, &jwt.RegisteredClaims{Issuer: "Senzen", ExpiresAt: jwt.NewNumericDate(time.Now().Add(1 * time.Hour))}, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(cookie, &jwt.RegisteredClaims{Issuer: "Senzen"}, func(token *jwt.Token) (interface{}, error) {
 		// token, err := jwt.ParseWithClaims(cookie, jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
 		// return []byte("secret"), nil
 		return []byte(os.Getenv("jwtSecretKey")), nil
