@@ -39,7 +39,7 @@ export function NavigationMenuDemo() {
 		<NavigationMenu className="[&>*]:bg-primary [&>*]:text-accent-foreground z-50">
 			<NavigationMenuList>
 				<NavigationMenuItem>
-					<Link href="/createPlan" legacyBehavior passHref>
+					<Link href="/createPlan">
 						<NavigationMenuLink className={navigationMenuTriggerStyle()}>
 							Create Plan
 						</NavigationMenuLink>

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtDecode } from "jwt-decode";
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
 	const token = req.cookies.get("jwt");
 	const path = req.nextUrl.pathname.replace(/\/+$/, "");
 
