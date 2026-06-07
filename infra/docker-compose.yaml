@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: mypassword
     volumes:
-      - postgres_Senzen:/var/lib/postgresql/data
+      - postgres_Senzen:/var/lib/postgresql
     ports:
       - "5432:5432"
     restart: unless-stopped

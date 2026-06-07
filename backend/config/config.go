@@ -55,7 +55,7 @@ func GithubConfig() oauth2.Config {
 		RedirectURL:  backendURL() + "/github_callback",
 		ClientID:     os.Getenv("GITHUB_CLIENT_ID"),
 		ClientSecret: os.Getenv("GITHUB_CLIENT_SECRET"),
-		Scopes:       []string{"user", "repo"},
+		Scopes:       []string{"user:email"},
 		Endpoint:     github.Endpoint,
 	}
 

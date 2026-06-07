@@ -74,16 +74,13 @@ func LoginUser(c *fiber.Ctx) error {
 
 	// Set cookie
 	c.Cookie(&fiber.Cookie{
-		Name:  "jwt",
-		Value: t,
-		Path:  "/",
-		// Domain:  "senzen.pantorn.site",
-		Expires: time.Now().Add(time.Hour * 72),
-		// HTTPOnly: true,
-		// Secure:   false,
+		Name:     "jwt",
+		Value:    t,
+		Path:     "/",
+		Expires:  time.Now().Add(time.Hour * 72),
 		HTTPOnly: false,
+		Secure:   true,
 		SameSite: "Lax",
-		// SameSite: "None",
 	})
 
 	return c.JSON(fiber.Map{"token": t, "message": "success"})

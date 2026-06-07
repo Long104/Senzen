@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -11,7 +15,7 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": true,
     "plugins": [
       {
@@ -19,11 +23,36 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@example*": ["./src/components/example/*"],
-      "@components*": ["./src/components/ui/*"],
+      "@/*": [
+        "./src/*"
+      ],
+      "@example*": [
+        "./src/components/example/*"
+      ],
+      "@components*": [
+        "./src/components/ui/*"
+      ]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/middleware.ts.old", "src/app/api/auth/route.js", "src/app/sign-in/damn", "src/components/ui/profile-dropdown.go", "src/app/testHome/pp", "src/app/page.tsx.old", "src/app/(product)/plan/[...planId]/page.tsx.old", "src/app/(product)/plan/[...planId]/p", "src/app/(product)/plan/[...planId]/p", "src/app/not-found.old", "src/m"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/middleware.ts.old",
+    "src/app/api/auth/route.js",
+    "src/app/sign-in/damn",
+    "src/components/ui/profile-dropdown.go",
+    "src/app/testHome/pp",
+    "src/app/page.tsx.old",
+    "src/app/(product)/plan/[...planId]/page.tsx.old",
+    "src/app/(product)/plan/[...planId]/p",
+    "src/app/(product)/plan/[...planId]/p",
+    "src/app/not-found.old",
+    "src/m",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
