@@ -6,6 +6,17 @@ export async function proxy(req: NextRequest) {
 	const token = req.cookies.get("jwt");
 	const path = req.nextUrl.pathname.replace(/\/+$/, "");
 
+	// OAuth paths — always let through (handled by backend via vercel.json rewrite)
+	const oauthPaths = [
+		"/google_login",
+		"/google_callback",
+		"/github_login",
+		"/github_callback",
+	];
+	if (oauthPaths.includes(path)) {
+		return NextResponse.next();
+	}
+
 	if (token) {
 		try {
 			const redirectToHome = ["", "/sign-in", "/sign-up"];
@@ -56,7 +67,6 @@ export const config = {
 		"/",
 		"/sign-in",
 		"/sign-up",
-		"/((?!.*\\..*|_next).*)",
-		// "/(api|trpc)(.*)"
-	], // Apply middleware to `/home`, `/dashboard`, etc.
+		"/((?!.*\\..*|_next|google_login|google_callback|github_login|github_callback).*)",
+	],
 };
