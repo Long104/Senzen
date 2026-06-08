@@ -86,7 +86,7 @@ export default function LoginPage() {
 				</CardHeader>
 				<CardContent className="flex flex-col gap-4">
 					<div className="flex flex-col gap-2">
-						<Link
+						<a
 							href={process.env.NEXT_PUBLIC_BACKEND + "/google_login"}
 						>
 							<Button variant="outline" className="w-full">
@@ -127,16 +127,16 @@ export default function LoginPage() {
 								</svg>
 								Login with Google
 							</Button>
-						</Link>
+						</a>
 
-						<Link
+						<a
 							href={process.env.NEXT_PUBLIC_BACKEND + "/github_login"}
 						>
 							<Button variant="outline" className="w-full">
 								<Github className="w-5 h-5 mr-2" />
 								Login with GitHub
 							</Button>
-						</Link>
+						</a>
 					</div>
 					<div className="flex items-center flex-col">
 						<Separator className="flex-grow" />

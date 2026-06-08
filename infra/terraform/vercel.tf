@@ -34,3 +34,8 @@ resource "vercel_project_environment_variable" "backend_url" {
   target     = ["production"]
   sensitive  = false
 }
+
+resource "vercel_project_domain" "senzen_custom" {
+  project_id = vercel_project.senzen.id
+  domain     = var.frontend_domain
+}
