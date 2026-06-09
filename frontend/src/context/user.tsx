@@ -31,7 +31,7 @@ export const UserProvider: React.FC<{
 			try {
 				// const data = await fetchGet(`user/${user?.user_id}`); // Replace with your API endpoint
 				// const data = await fetchGet(`user/1`); // Replace with your API endpoint
-				const data = await fetchGet(`user/${auth}`); // Replace with your API endpoint
+				const data = await fetchGet(`user`); // user_id comes from JWT
 				setUser_data(data);
 				// console.log("this is user id", user?.user_id);
 			} catch (error) {

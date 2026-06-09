@@ -19,7 +19,7 @@ export const useCategory = () => {
 					return null; // Fallback when no userId
 				}
 				const result = await fetchGet(
-					`categories?user_id=${userId}&plan_id=${planId}`,
+					`categories?plan_id=${planId}`,
 					// `categories?user_id=${userId},plan_id=${planId}`,
 
 					// `categories`,
@@ -36,7 +36,7 @@ export const useCategory = () => {
 			await fetchPost(`category`, {
 				...newCategory, // Spread the newCategory data
 				plan_id: Number(planId), // Add plan_id to the request body
-				user_id: userId, // Add user_id to the request body
+				// user_id comes from JWT on the backend
 			}),
 		onSuccess: (newCategoryData) => {
 			// Get the current cached categories data
@@ -64,7 +64,7 @@ export const useCategory = () => {
 			categoryId,
 		}: { planId: string | null; categoryId: number }) =>
 			fetchDeleteCategory(
-				`category?user_id=${userId}&plan_id=${planId}&category_id=${categoryId}`,
+				`category?plan_id=${planId}&category_id=${categoryId}`,
 			), // Your delete API call
 		onSuccess: () => {
 			queryClient.removeQueries({ queryKey: ["categories", planId] });

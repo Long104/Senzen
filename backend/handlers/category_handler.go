@@ -14,6 +14,9 @@ func CreateCategory(c *fiber.Ctx) error {
 	if err := c.BodyParser(category); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Cannot parse JSON"})
 	}
+	// Force user_id from JWT, ignore whatever client sent
+	category.UserID = int64(c.Locals("user_id").(uint))
+
 	if err := config.DB.Create(&category).Error; err != nil {
 		// return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Cannot create category"})
 		return c.JSON(fiber.Map{"error": "Cannot create duplicate category"})
@@ -32,18 +35,12 @@ func GetCategory(c *fiber.Ctx) error {
 
 func GetCategories(c *fiber.Ctx) error {
 	// Retrieve query parameters from the request
-	userIDStr := c.Query("user_id")
 	planIDStr := c.Query("plan_id")
+	userID := c.Locals("user_id") // from JWT, not query param
 
 	// Validate parameters
-	if userIDStr == "" || planIDStr == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Missing user_id or plan_id"})
-	}
-
-	// Convert user_id and plan_id to integers
-	userID, err := strconv.Atoi(userIDStr)
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid user_id"})
+	if planIDStr == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Missing plan_id"})
 	}
 
 	planID, err := strconv.Atoi(planIDStr)
@@ -84,19 +81,13 @@ func UpdateCategory(c *fiber.Ctx) error {
 
 func DeleteCategory(c *fiber.Ctx) error {
 	// Retrieve query parameters from the request
-	userIDStr := c.Query("user_id")
 	planIDStr := c.Query("plan_id")
 	categoryIDStr := c.Query("category_id")
+	userID := c.Locals("user_id") // from JWT, not query param
 
 	// Validate parameters
-	if userIDStr == "" || planIDStr == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Missing user_id or plan_id"})
-	}
-
-	// Convert user_id and plan_id to integers
-	userID, err := strconv.Atoi(userIDStr)
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid user_id"})
+	if planIDStr == "" || categoryIDStr == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Missing plan_id or category_id"})
 	}
 
 	planID, err := strconv.Atoi(planIDStr)

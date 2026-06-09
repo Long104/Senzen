@@ -17,10 +17,10 @@ func GetUsers(c *fiber.Ctx) error {
 }
 
 func GetUser(c *fiber.Ctx) error {
-    id := c.Params("id")
+    userID := c.Locals("user_id") // from JWT
     var user models.User
 
-    if err := config.DB.First(&user, id).Error; err != nil {
+    if err := config.DB.First(&user, userID).Error; err != nil {
         log.Println("Error fetching user:", err)
         return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Cannot fetch user"})
     }

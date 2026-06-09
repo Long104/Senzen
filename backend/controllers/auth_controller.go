@@ -63,7 +63,6 @@ func LoginUser(c *fiber.Ctx) error {
 	claims := token.Claims.(jwt.MapClaims)
 	claims["user_id"] = user.ID
 	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
-	claims["role"] = "admin"
 	claims["email"] = user.Email
 	claims["name"] = user.Name
 
@@ -78,7 +77,7 @@ func LoginUser(c *fiber.Ctx) error {
 		Value:    t,
 		Path:     "/",
 		Expires:  time.Now().Add(time.Hour * 72),
-		HTTPOnly: false,
+		HTTPOnly: true,
 		Secure:   true,
 		SameSite: "Lax",
 	})

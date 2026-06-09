@@ -1,14 +1,12 @@
 // api/plans.ts
 import { fetchGet } from "@/fetch/client";
 
-export const fetchUser = async (id:number | undefined) => {
+export const fetchUser = async () => {
 	try {
-		const response = await fetchGet(`user/${id}`);
-		return response;
+		const response = await fetchGet(`user`);
 		return response;
 	} catch (error) {
-		console.log("Error fetching plans:", error);
+		console.log("Error fetching user:", error);
 	}
-	// return await fetchGet("plans");
 };
 

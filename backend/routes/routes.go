@@ -11,8 +11,8 @@ func SetupRoutes(app fiber.Router) {
 	// All CRUD routes require authentication
 	protected := app.Group("/", middleware.AuthRequired)
 
-	// user
-	protected.Get("/user/:id", handlers.GetUser)
+	// user (user_id comes from JWT, not URL)
+	protected.Get("/user", handlers.GetUser)
 	protected.Get("/users", handlers.GetUsers)
 
 	// transaction
@@ -26,11 +26,11 @@ func SetupRoutes(app fiber.Router) {
 	protected.Post("/category", handlers.CreateCategory)
 	protected.Delete("/category", handlers.DeleteCategory)
 
-	// plan
+	// plan (user_id comes from JWT, not URL)
 	protected.Get("/plan/:id", func(c *fiber.Ctx) error {
 		return handlers.GetPlanByID(config.DB, c)
 	})
-	protected.Get("/plans/:id", func(c *fiber.Ctx) error {
+	protected.Get("/plans", func(c *fiber.Ctx) error {
 		return handlers.GetPlans(config.DB, c)
 	})
 	protected.Post("/plan", func(c *fiber.Ctx) error {

@@ -75,7 +75,6 @@ func GoogleCallback(c *fiber.Ctx) error {
 	claims := appToken.Claims.(jwt.MapClaims)
 	claims["user_id"] = userDatabase.ID
 	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
-	claims["role"] = "admin"
 	claims["name"] = userName
 	claims["email"] = userEmail
 
@@ -90,7 +89,7 @@ func GoogleCallback(c *fiber.Ctx) error {
 		Value:    t,
 		Path:     "/",
 		Expires:  time.Now().Add(time.Hour * 72),
-		HTTPOnly: false,
+		HTTPOnly: true,
 		Secure:   true,
 		SameSite: "Lax",
 	})

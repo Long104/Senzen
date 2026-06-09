@@ -39,7 +39,7 @@ export const useEachPlan = () => {
 			await fetchPost(`transaction`, {
 				...newTransaction, // Spread the newCategory data
 				plan_id: Number(planId), // Add plan_id to the request body
-				user_id: userId, // Add user_id to the request body
+				// user_id comes from JWT on the backend
 			});
 			console.log("this is new transaction", newTransaction);
 		},

@@ -44,7 +44,7 @@ export const usePlan = () => {
 			if (!userId) {
 				return null; // Fallback when no userId
 			}
-			const result = await fetchPlans(userId);
+			const result = await fetchPlans();
 			// console.log("Fetch Plans Result:", result);
 			return result;
 		},

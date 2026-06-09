@@ -18,10 +18,11 @@ import (
 // gorm.Model
 
 func GetPlanByID(db *gorm.DB, c *fiber.Ctx) error {
-	planId := c.Params("id")
+	planID := c.Params("id")
+	userID := c.Locals("user_id") // from JWT
 	var plan models.Plan
 
-	if err := db.Preload("Transactions.Category").First(&plan, planId).Error; err != nil {
+	if err := db.Preload("Transactions.Category").Where("user_id = ? AND id = ?", userID, planID).First(&plan, planID).Error; err != nil {
 		// if err := db.Preload(clause.Associations).First(&plan, planId).Error; err != nil {
 		// if err := db.First(&plan, planId).Error; err != nil {
 		log.Println("Error fetching plan:", err)
@@ -32,10 +33,10 @@ func GetPlanByID(db *gorm.DB, c *fiber.Ctx) error {
 }
 
 func GetPlans(db *gorm.DB, c *fiber.Ctx) error {
-	userId := c.Params("id")
+	userID := c.Locals("user_id") // from JWT
 	var plans []models.Plan
 
-	if err := db.Where("user_id = ?", userId).Find(&plans).Error; err != nil {
+	if err := db.Where("user_id = ?", userID).Find(&plans).Error; err != nil {
 		log.Println("Error fetching plans:", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Cannot fetch plans"})
 	}
@@ -50,6 +51,9 @@ func CreatePlan(db *gorm.DB, c *fiber.Ctx) error {
 		log.Println("Error parsing request body:", err) // Log parsing error
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request"})
 	}
+
+	// Force user_id from JWT, ignore whatever client sent
+	plan.UserID = int64(c.Locals("user_id").(uint))
 
 	if err := db.Create(plan).Error; err != nil {
 		log.Println("Error saving plan to database:", err) // Log database error
@@ -82,6 +86,13 @@ func UpdatePlan(db *gorm.DB, c *fiber.Ctx) error {
 // deleteCategory deletes a category by id
 func DeletePlan(db *gorm.DB, c *fiber.Ctx) error {
 	id := c.Params("id")
+	userID := c.Locals("user_id") // from JWT
+
+	// Verify the plan belongs to the logged-in user
+	var plan models.Plan
+	if err := db.Where("user_id = ? AND id = ?", userID, id).First(&plan).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Plan not found"})
+	}
 
 	if err := db.Where("plan_id = ?", id).Delete(&models.Transaction{}).Error; err != nil {
 		log.Println("Error deleting transactions:", err)

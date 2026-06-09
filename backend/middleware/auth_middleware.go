@@ -32,10 +32,13 @@ func AuthRequired(c *fiber.Ctx) error {
 		return err
 	}
 
-	if claims, ok := token.Claims.(*jwt.RegisteredClaims); ok && token.Valid {
-		fmt.Println("Issuer:", claims.Issuer)
-		fmt.Println("user_id:", token.Claims)
-
+	if _, ok := token.Claims.(*jwt.RegisteredClaims); ok && token.Valid {
+		// Extract user_id from JWT claims and store in context
+		// so handlers can use c.Locals("user_id") instead of URL/query params
+		rawClaims := token.Claims.(jwt.MapClaims)
+		if userID, ok := rawClaims["user_id"].(float64); ok {
+			c.Locals("user_id", uint(userID))
+		}
 	} else {
 		return c.SendStatus(fiber.StatusUnauthorized)
 	}
