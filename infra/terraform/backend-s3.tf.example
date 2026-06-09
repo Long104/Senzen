@@ -1,0 +1,28 @@
+# =============================================================
+# S3 Remote State Backend — Alternative to Terraform Cloud
+# =============================================================
+# If you don't want to use Terraform Cloud, store state in AWS S3.
+# This file is NOT active by default — Senzen uses TF Cloud.
+#
+# To switch to S3 backend:
+#   1. Create the S3 bucket + DynamoDB table (see below)
+#   2. Uncomment this backend block in versions.tf
+#   3. Remove the cloud {} block from versions.tf
+#   4. Run: terraform init -migrate-state
+#
+# REQUIREMENTS:
+#   - AWS CLI installed and configured (`aws configure`)
+#   - S3 bucket created (with versioning enabled)
+#   - DynamoDB table created (for state locking)
+#   - Both collaborators need AWS credentials to the same bucket
+# =============================================================
+
+terraform {
+  backend "s3" {
+    bucket         = "senzen-terraform-state"
+    key            = "infra/terraform/terraform.tfstate"
+    region         = "ap-southeast-1"
+    encrypt        = true
+    dynamodb_table = "terraform-state-lock"
+  }
+}
