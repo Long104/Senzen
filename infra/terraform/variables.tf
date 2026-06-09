@@ -71,7 +71,33 @@ variable "render_service_name" {
 variable "vercel_cname_target" {
   description = "Vercel's CNAME target (cname.vercel-dns.com)"
   type        = string
-  default     = "cname.vercel-dns.com"
+  default     = "cname.vercel-dns.com" 
+}
+
+# ─────────────────────────────────────────────────────────────
+# Supabase (Managed Postgres Database)
+# ─────────────────────────────────────────────────────────────
+variable "supabase_access_token" {
+  description = "Supabase Personal Access Token — https://supabase.com/dashboard/account/tokens"
+  type        = string
+  sensitive   = true
+}
+
+variable "supabase_org_id" {
+  description = "Supabase organization slug — Dashboard → Org Settings → General → Organization slug"
+  type        = string
+}
+
+variable "supabase_project_name" {
+  description = "Name for the Supabase project"
+  type        = string
+  default     = "senzen"
+}
+
+variable "supabase_region" {
+  description = "Region for the Supabase project (e.g. ap-southeast-1 for Singapore, us-east-1 for N. Virginia)"
+  type        = string
+  default     = "ap-southeast-1"
 }
 
 # ─────────────────────────────────────────────────────────────

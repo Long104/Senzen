@@ -45,6 +45,16 @@ github_repo = "Long104/Senzen"
 # vercel_cname_target = "cname.vercel-dns.com"
 
 # ─────────────────────────────────────────────────────────────
+# Supabase (Managed Postgres Database)
+# Access Token: https://supabase.com/dashboard/account/tokens
+# Org Slug:    Dashboard → Org Settings → General → Organization slug
+# ─────────────────────────────────────────────────────────────
+supabase_access_token = "sbp-access-token-here"
+supabase_org_id       = "your-org-slug-here"
+# supabase_project_name defaults to "senzen"
+# supabase_region defaults to "ap-southeast-1" (Singapore)
+
+# ─────────────────────────────────────────────────────────────
 # Backend env vars — DOCUMENTATION ONLY.
 # These are NOT used by Terraform. They are listed here so you
 # have a single checklist of what to set in the Render dashboard

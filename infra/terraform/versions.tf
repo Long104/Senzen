@@ -18,6 +18,14 @@ terraform {
       source  = "cloudflare/cloudflare"
       version = "~> 4.0"
     }
+    supabase = {
+      source  = "supabase/supabase"
+      version = "~> 1.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.0"
+    }
   }
 }
 
@@ -27,4 +35,8 @@ provider "vercel" {
 
 provider "cloudflare" {
   api_token = var.cloudflare_api_token
+}
+
+provider "supabase" {
+  access_token = var.supabase_access_token
 }
