@@ -5,10 +5,42 @@
 # ============================================================
 # terraform.tfvars is .gitignore'd — keep secrets out of git.
 #
-# If you are using Terraform Cloud, set the variables in the
-# workspace Variables tab instead — Terraform Cloud will pass
-# them in, and terraform.tfvars is ignored. The two are NOT
-# loaded together.
+# HOW THIS WORKS:
+#   This file is a TEMPLATE. Each developer fills in their OWN
+#   tokens and gets their OWN infrastructure. Nobody shares
+#   secrets — everyone creates their own Supabase project,
+#   Vercel project, and DNS records.
+#
+#   After filling in your values, run:
+#     cd infra/terraform
+#     terraform init
+#     terraform apply
+#
+#   To see your generated secrets (DB password, API keys):
+#     terraform output -raw supabase_db_password
+#     terraform output -raw supabase_anon_key
+#     terraform output -raw supabase_service_role_key
+#
+# OPTION A — Terraform Cloud (shared state, team collaboration):
+#   If using Terraform Cloud, set variables in the workspace
+#   Variables tab instead. terraform.tfvars is ignored.
+#   Both the .tfvars and the remote state are NOT in this repo.
+#
+# OPTION B — Local state (own infra, complete isolation):
+#   Fill in this file with YOUR tokens. You get your own
+#   Supabase project, Vercel project, etc. No sharing needed.
+#   The state file (.terraform.tfstate) lives locally on YOUR
+#   machine — it holds all generated secrets (DB password, etc.)
+#   ⚠️ BACK UP your terraform.tfstate! If you lose it, you
+#      lose access to your generated DB password and must reset
+#      it in the Supabase dashboard manually.
+#
+# OPTION C — Multi-environment (dev/staging per person):
+#   Each person changes `frontend_domain` and project names to
+#   create their own isolated environment. Example:
+#     frontend_domain    = "senzen-jane.pantorn.site"
+#     vercel_project_name = "senzen-jane"
+#     supabase_project_name = "senzen-jane"
 # ============================================================
 
 # Terraform Cloud
@@ -39,7 +71,12 @@ cloudflare_zone_id   = "cloudflare-zone-id-here"
 github_repo = "Long104/Senzen"
 
 # ─────────────────────────────────────────────────────────────
-# Public domains — defaults shown, override only if different
+# Environment customization (OPTION C — per-person environments)
+# Override these defaults to create your own isolated setup:
+#   frontend_domain        = "senzen-yourname.pantorn.site"
+#   vercel_project_name    = "senzen-yourname"
+#   supabase_project_name  = "senzen-yourname"
+#   render_service_name    = "senzen-api-yourname"
 # ─────────────────────────────────────────────────────────────
 # frontend_domain    = "senzen.pantorn.site"
 # vercel_cname_target = "cname.vercel-dns.com"
