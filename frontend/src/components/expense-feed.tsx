@@ -1,6 +1,9 @@
 "use client";
 
+import { useState } from "react";
+import { X } from "lucide-react";
 import type { Transaction } from "@/hooks/useTransactions";
+import { useDeleteTransaction } from "@/hooks/useTransactions";
 import { categoryMeta } from "@/lib/categories";
 
 function dayLabel(dateStr: string): string {
@@ -22,7 +25,7 @@ function dayLabel(dateStr: string): string {
 	});
 }
 
-function FeedRow({ t }: { t: Transaction }) {
+function FeedRow({ t, onDelete }: { t: Transaction; onDelete: (id: number) => void }) {
 	const meta = categoryMeta(t.category_name || t.category?.name);
 	return (
 		<div className="group flex items-center gap-3 py-2.5">
@@ -42,6 +45,14 @@ function FeedRow({ t }: { t: Transaction }) {
 			<span className="shrink-0 font-mono text-sm tabular-nums text-primary">
 				${t.amount.toFixed(2)}
 			</span>
+			<button
+				type="button"
+				onClick={() => onDelete(t.id)}
+				aria-label="delete expense"
+				className="shrink-0 rounded-md p-1 text-muted-foreground opacity-0 transition-all hover:text-destructive focus-visible:opacity-100 group-hover:opacity-100"
+			>
+				<X className="h-3.5 w-3.5" />
+			</button>
 		</div>
 	);
 }
@@ -51,6 +62,16 @@ export function ExpenseFeed({
 }: {
 	transactions: Transaction[] | undefined;
 }) {
+	const { deleteTransactionMutation } = useDeleteTransaction();
+	const [deletingId, setDeletingId] = useState<number | null>(null);
+
+	function handleDelete(id: number) {
+		setDeletingId(id);
+		deleteTransactionMutation.mutate(id, {
+			onSettled: () => setDeletingId(null),
+		});
+	}
+
 	if (!transactions || transactions.length === 0) {
 		return (
 			<p className="py-16 text-center text-sm text-muted-foreground">
@@ -76,7 +97,12 @@ export function ExpenseFeed({
 					</h2>
 					<div className="divide-y divide-border/60">
 						{items.map((t) => (
-							<FeedRow key={t.id} t={t} />
+							<div
+								key={t.id}
+								className={deletingId === t.id ? "opacity-40 transition-opacity" : "transition-opacity"}
+							>
+								<FeedRow t={t} onDelete={handleDelete} />
+							</div>
 						))}
 					</div>
 				</section>
