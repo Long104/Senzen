@@ -26,20 +26,23 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Plus, X } from "lucide-react";
 import { usePlan } from "@/hooks/usePlan";
 import { useTransactions } from "@/hooks/useTransactions";
+import { useCurrency } from "@/lib/currency";
 import { z } from "zod";
 import { PlanSchema } from "@/types";
 
 type Plan = z.infer<typeof PlanSchema>;
 
-function PlanCard({
-	plan,
-	spent,
-	onDelete,
-}: {
-	plan: Plan;
-	spent: number;
-	onDelete: (id: number) => void;
-}) {
+	function PlanCard({
+		plan,
+		spent,
+		symbol,
+		onDelete,
+	}: {
+		plan: Plan;
+		spent: number;
+		symbol: string;
+		onDelete: (id: number) => void;
+	}) {
 	const budget = (plan.initial_budget as number) || 0;
 	const left = budget - spent;
 	const progress = budget > 0 ? Math.min(spent / budget, 1) : 0;
@@ -60,7 +63,7 @@ function PlanCard({
 						: "—"}
 				</p>
 				<p className="mt-4 font-mono text-2xl font-semibold tabular-nums text-foreground">
-					{budget > 0 ? `$${left.toFixed(2)}` : `$${spent.toFixed(2)}`}
+					{budget > 0 ? `${symbol}${left.toFixed(2)}` : `${symbol}${spent.toFixed(2)}`}
 					<span className="ml-1 font-sans text-sm font-normal text-muted-foreground">
 						{budget > 0 ? "left" : "spent"}
 					</span>
@@ -91,6 +94,7 @@ export default function Plans() {
 	const { data: plans, isLoading } = plansQuery;
 	const { transactionsQuery } = useTransactions();
 	const transactions = transactionsQuery.data;
+	const { symbol } = useCurrency();
 
 	const [dialogOpen, setDialogOpen] = useState(false);
 	const [name, setName] = useState("");
@@ -147,6 +151,7 @@ export default function Plans() {
 					{plans.map((plan: Plan) => (
 						<PlanCard
 							key={plan.id}
+							symbol={symbol}
 							plan={plan}
 							spent={spentByPlan.get(plan.id as number) ?? 0}
 							onDelete={(id) =>
@@ -191,7 +196,7 @@ export default function Plans() {
 							<Label htmlFor="plan-budget">budget</Label>
 							<div className="relative">
 								<span className="absolute inset-y-0 left-0 flex items-center pl-3 font-mono text-muted-foreground">
-									$
+									{symbol}
 								</span>
 								<Input
 									id="plan-budget"

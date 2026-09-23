@@ -3,6 +3,7 @@
 import { QuickAdd } from "@/components/quick-add";
 import { ExpenseFeed } from "@/components/expense-feed";
 import { useTransactions } from "@/hooks/useTransactions";
+import { useCurrency } from "@/lib/currency";
 
 function monthSpent(transactions: { amount: number; transaction_date: string }[]) {
 	const now = new Date();
@@ -19,6 +20,7 @@ function monthSpent(transactions: { amount: number; transaction_date: string }[]
 export default function Home() {
 	const { transactionsQuery } = useTransactions();
 	const transactions = transactionsQuery.data;
+	const { symbol } = useCurrency();
 
 	const spent = transactions ? monthSpent(transactions) : 0;
 	const monthName = new Date().toLocaleDateString("en-US", { month: "long" });
@@ -33,7 +35,7 @@ export default function Home() {
 			</p>
 
 			<h1 className="mt-2 font-mono text-3xl font-semibold tracking-tight tabular-nums text-foreground">
-				{monthName} · ${spent.toFixed(2)}{" "}
+				{monthName} · {symbol}{spent.toFixed(2)}{" "}
 				<span className="font-sans text-xl font-normal text-muted-foreground">
 					spent
 				</span>

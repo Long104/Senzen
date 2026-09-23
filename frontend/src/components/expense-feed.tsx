@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import type { Transaction } from "@/hooks/useTransactions";
 import { useDeleteTransaction } from "@/hooks/useTransactions";
 import { categoryMeta } from "@/lib/categories";
+import { useCurrency } from "@/lib/currency";
 
 function dayLabel(dateStr: string): string {
 	const date = new Date(dateStr);
@@ -25,7 +26,7 @@ function dayLabel(dateStr: string): string {
 	});
 }
 
-function FeedRow({ t, onDelete }: { t: Transaction; onDelete: (id: number) => void }) {
+function FeedRow({ t, onDelete, symbol }: { t: Transaction; onDelete: (id: number) => void; symbol: string }) {
 	const meta = categoryMeta(t.category_name || t.category?.name);
 	return (
 		<div className="group flex items-center gap-3 py-2.5">
@@ -43,7 +44,7 @@ function FeedRow({ t, onDelete }: { t: Transaction; onDelete: (id: number) => vo
 			)}
 			<span className="flex-1 border-b border-dotted border-border/80 translate-y-1" />
 			<span className="shrink-0 font-mono text-sm tabular-nums text-primary">
-				${t.amount.toFixed(2)}
+				{symbol}{t.amount.toFixed(2)}
 			</span>
 			<button
 				type="button"
@@ -64,6 +65,7 @@ export function ExpenseFeed({
 }) {
 	const { deleteTransactionMutation } = useDeleteTransaction();
 	const [deletingId, setDeletingId] = useState<number | null>(null);
+	const { symbol } = useCurrency();
 
 	function handleDelete(id: number) {
 		setDeletingId(id);
@@ -92,7 +94,7 @@ export function ExpenseFeed({
 		<div>
 			{[...groups.entries()].map(([label, items]) => (
 				<section key={label} className="mb-6">
-					<h2 className="mb-1 text-xs uppercase tracking-wide text-muted-foreground">
+					<h2 className="mb-1 text-sm lowercase text-muted-foreground">
 						{label}
 					</h2>
 					<div className="divide-y divide-border/60">
@@ -101,7 +103,7 @@ export function ExpenseFeed({
 								key={t.id}
 								className={deletingId === t.id ? "opacity-40 transition-opacity" : "transition-opacity"}
 							>
-								<FeedRow t={t} onDelete={handleDelete} />
+								<FeedRow t={t} onDelete={handleDelete} symbol={symbol} />
 							</div>
 						))}
 					</div>

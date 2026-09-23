@@ -16,6 +16,7 @@ import Link from "next/link";
 import { z } from "zod";
 import { PlanSchema } from "@/types";
 import { cn } from "@/lib/utils";
+import { useCurrency } from "@/lib/currency";
 
 type Plan = z.infer<typeof PlanSchema>;
 type Mode = "month" | "year" | "all";
@@ -36,6 +37,7 @@ export default function ReportPage() {
 	const [mode, setMode] = useState<Mode>("month");
 	const [offset, setOffset] = useState(0);
 	const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+	const { symbol } = useCurrency();
 	const { transactionsQuery } = useTransactions();
 	const { plansQuery } = usePlan();
 	const transactions = transactionsQuery.data ?? [];
@@ -226,7 +228,7 @@ export default function ReportPage() {
 			</div>
 
 			<p className="mt-4 font-mono text-3xl font-semibold tracking-tight tabular-nums text-foreground">
-				${view.total.toFixed(2)}{" "}
+				{symbol}{view.total.toFixed(2)}{" "}
 				<span className="font-sans text-xl font-normal text-muted-foreground">
 					spent
 				</span>
@@ -248,7 +250,7 @@ export default function ReportPage() {
 
 			<div className="mt-10 grid gap-10 md:grid-cols-2">
 				<section>
-					<h2 className="mb-3 text-xs uppercase tracking-wide text-muted-foreground">
+					<h2 className="mb-3 text-sm lowercase text-muted-foreground">
 						by category
 					</h2>
 					{view.categoryTotals.length === 0 ? (
@@ -281,7 +283,7 @@ export default function ReportPage() {
 												/>
 											</div>
 											<span className="w-20 shrink-0 text-right font-mono text-sm tabular-nums text-foreground">
-												${total.toFixed(2)}
+												{symbol}{total.toFixed(2)}
 											</span>
 											<ChevronDown
 												className={`h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform ${expanded ? "rotate-180" : ""}`}
@@ -299,7 +301,7 @@ export default function ReportPage() {
 																})}
 														</span>
 														<span className="shrink-0 font-mono text-sm tabular-nums text-primary">
-															${t.amount.toFixed(2)}
+															{symbol}{t.amount.toFixed(2)}
 														</span>
 													</div>
 												))}
@@ -313,7 +315,7 @@ export default function ReportPage() {
 				</section>
 
 				<section>
-					<h2 className="mb-3 text-xs uppercase tracking-wide text-muted-foreground">
+					<h2 className="mb-3 text-sm lowercase text-muted-foreground">
 						{mode === "month" ? "daily rhythm" : mode === "year" ? "months" : "every month"}
 					</h2>
 					<ChartContainer config={chartConfig} className="h-40 w-full">
@@ -352,7 +354,7 @@ export default function ReportPage() {
 
 			{plans.length > 0 && (
 				<section className="mt-12">
-					<h2 className="mb-3 text-xs uppercase tracking-wide text-muted-foreground">
+					<h2 className="mb-3 text-sm lowercase text-muted-foreground">
 						plans
 					</h2>
 					<div className="flex flex-col gap-3">
@@ -377,8 +379,8 @@ export default function ReportPage() {
 									</div>
 									<span className="w-32 shrink-0 text-right font-mono text-sm tabular-nums text-foreground">
 										{budget > 0
-											? `$${(budget - spent).toFixed(2)} left`
-											: `$${spent.toFixed(2)} spent`}
+											? `${symbol}${(budget - spent).toFixed(2)} left`
+											: `${symbol}${spent.toFixed(2)} spent`}
 									</span>
 								</Link>
 							);

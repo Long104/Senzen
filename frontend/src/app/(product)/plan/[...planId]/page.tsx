@@ -5,6 +5,7 @@ import { QuickAdd } from "@/components/quick-add";
 import { ExpenseFeed } from "@/components/expense-feed";
 import { usePlanById } from "@/hooks/usePlan";
 import { useTransactions } from "@/hooks/useTransactions";
+import { useCurrency } from "@/lib/currency";
 
 function inMonth(date: string, ref: Date) {
 	const d = new Date(date);
@@ -27,6 +28,7 @@ export default function PlanPage() {
 
 	const { data: plan } = usePlanById();
 	const { transactionsQuery } = useTransactions();
+	const { symbol } = useCurrency();
 	const all = transactionsQuery.data;
 	const transactions = (all ?? []).filter(
 		(t) => t.plan_id != null && String(t.plan_id) === String(planId),
@@ -51,36 +53,36 @@ export default function PlanPage() {
 			</h1>
 			{budget > 0 && (
 				<p className="mt-2 font-mono text-lg tabular-nums text-foreground">
-					${left.toFixed(2)}{" "}
+					{symbol}{left.toFixed(2)}{" "}
 					<span className="font-sans text-sm text-muted-foreground">
-						left of ${budget.toLocaleString()}
+						left of {symbol}{budget.toLocaleString()}
 					</span>
 				</p>
 			)}
 
 			<div className="mt-6 flex gap-6 border-b border-border pb-6">
 				<div>
-					<p className="text-xs uppercase tracking-wide text-muted-foreground">
+					<p className="text-sm lowercase text-muted-foreground">
 						today
 					</p>
 					<p className="font-mono text-lg tabular-nums text-foreground">
-						${today.toFixed(2)}
+						{symbol}{today.toFixed(2)}
 					</p>
 				</div>
 				<div>
-					<p className="text-xs uppercase tracking-wide text-muted-foreground">
+					<p className="text-sm lowercase text-muted-foreground">
 						this month
 					</p>
 					<p className="font-mono text-lg tabular-nums text-foreground">
-						${month.toFixed(2)}
+						{symbol}{month.toFixed(2)}
 					</p>
 				</div>
 				<div>
-					<p className="text-xs uppercase tracking-wide text-muted-foreground">
+					<p className="text-sm lowercase text-muted-foreground">
 						total
 					</p>
 					<p className="font-mono text-lg tabular-nums text-foreground">
-						${total.toFixed(2)}
+						{symbol}{total.toFixed(2)}
 					</p>
 				</div>
 			</div>

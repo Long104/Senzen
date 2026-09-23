@@ -3,6 +3,13 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { BUILT_IN_CATEGORIES, addCustomCategory, getCustomCategories } from "@/lib/categories";
+import { CURRENCIES, setCurrency, useCurrency } from "@/lib/currency";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useCreateTransaction } from "@/hooks/useTransactions";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -16,6 +23,7 @@ export function QuickAdd({ planId }: { planId?: number }) {
 	const [customName, setCustomName] = useState("");
 	const { createTransactionMutation } = useCreateTransaction();
 	const { toast } = useToast();
+	const { code, symbol } = useCurrency();
 
 	const active = amount.trim().length > 0;
 	const allCategories = [...BUILT_IN_CATEGORIES.map((c) => c.key), ...customs];
@@ -68,7 +76,29 @@ export function QuickAdd({ planId }: { planId?: number }) {
 	return (
 		<div className="w-full">
 			<div className="flex items-center gap-2 rounded-lg border border-border bg-card px-4 h-14">
-				<span className="font-mono text-lg text-primary select-none">$</span>
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<button
+							type="button"
+							aria-label="change currency"
+							title={code}
+							className="font-mono text-lg text-primary select-none hover:text-primary/80"
+						>
+							{symbol}
+						</button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align="start">
+						{CURRENCIES.map((c) => (
+							<DropdownMenuItem
+								key={c.code}
+								onClick={() => setCurrency(c.code)}
+								className={c.code === code ? "text-primary" : ""}
+							>
+								<span className="w-6 font-mono">{c.symbol}</span> {c.code}
+							</DropdownMenuItem>
+						))}
+					</DropdownMenuContent>
+				</DropdownMenu>
 				<input
 					value={amount}
 					onChange={(e) => {
