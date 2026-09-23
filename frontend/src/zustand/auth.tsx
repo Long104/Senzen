@@ -27,7 +27,7 @@ const useAuthStore = create(
 			jwt: null,
 			login: (token: string) => {
 				const currentState = get(); // Access current state
-				if (currentState.jwt) {
+				if (currentState.jwt && currentState.user) {
 					console.log("User is already logged in");
 					return;
 				}

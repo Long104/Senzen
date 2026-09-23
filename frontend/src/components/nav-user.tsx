@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import {
 	BadgeCheck,
 	Bell,
@@ -36,6 +37,30 @@ export function NavUser() {
 			.slice(0, 2)
 			.join("")
 			.toUpperCase() || "U";
+
+	// OAuth (Google/GitHub) sets the HttpOnly cookie server-side and never
+	// touches the zustand store — hydrate identity from the backend instead.
+	useEffect(() => {
+		if (user) return;
+		fetch(process.env.NEXT_PUBLIC_BACKEND + "/user", {
+			credentials: "include",
+		})
+			.then((res) => (res.ok ? res.json() : null))
+			.then((data) => {
+				if (data?.email) {
+					useAuthStore.setState({
+						user: {
+							user_id: data.id,
+							exp: 0,
+							name: data.name,
+							email: data.email,
+							role: "",
+						},
+					});
+				}
+			})
+			.catch(() => {});
+	}, [user]);
 
 	const handleLogout = async () => {
 		await logout(); // Clear HttpOnly cookie via backend + user state
