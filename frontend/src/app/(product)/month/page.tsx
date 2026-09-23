@@ -1,9 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
-import { QuickAdd } from "@/components/quick-add";
 import { useTransactions } from "@/hooks/useTransactions";
 import { usePlan } from "@/hooks/usePlan";
 import { categoryMeta } from "@/lib/categories";
@@ -29,6 +28,7 @@ function monthKey(d: Date) {
 
 export default function MonthPage() {
 	const [offset, setOffset] = useState(0);
+	const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
 	const { transactionsQuery } = useTransactions();
 	const { plansQuery } = usePlan();
 	const transactions = transactionsQuery.data ?? [];
@@ -142,34 +142,66 @@ export default function MonthPage() {
 					<h2 className="mb-3 text-xs uppercase tracking-wide text-muted-foreground">
 						by category
 					</h2>
-					{categoryTotals.length === 0 ? (
-						<p className="py-8 text-sm text-muted-foreground">
-							nothing this month
-						</p>
-					) : (
-						<div className="flex flex-col gap-3">
-							{categoryTotals.map(({ key, total, meta }) => (
-								<div key={key} className="flex items-center gap-3">
-									<meta.icon
-										className="h-4 w-4 shrink-0 text-muted-foreground"
-										strokeWidth={1.5}
-									/>
-									<span className="w-28 shrink-0 truncate text-sm text-foreground">
-										{meta.label}
-									</span>
-									<div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
-										<div
-											className="h-full rounded-full bg-primary"
-											style={{ width: `${(total / maxCat) * 100}%` }}
+				{categoryTotals.length === 0 ? (
+					<p className="py-8 text-sm text-muted-foreground">
+						nothing this month
+					</p>
+				) : (
+					<div className="flex flex-col">
+						{categoryTotals.map(({ key, total, meta }) => {
+							const expanded = expandedCategory === key;
+							const items = monthTx.filter(
+								(t) =>
+									(t.category_name || t.category?.name || "other") === key,
+							);
+							return (
+								<div key={key}>
+									<button
+										type="button"
+										onClick={() =>
+											setExpandedCategory(expanded ? null : key)
+										}
+										className="group flex w-full items-center gap-3 rounded-md py-2.5 text-left transition-colors hover:bg-muted/50"
+									>
+										<meta.icon
+											className="h-4 w-4 shrink-0 text-muted-foreground"
+											strokeWidth={1.5}
 										/>
-									</div>
-									<span className="w-20 shrink-0 text-right font-mono text-sm tabular-nums text-foreground">
-										${total.toFixed(2)}
-									</span>
+										<span className="w-24 shrink-0 truncate text-sm text-foreground">
+											{meta.label}
+										</span>
+										<div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
+											<div
+												className="h-full rounded-full bg-primary transition-all"
+												style={{ width: `${(total / maxCat) * 100}%` }}
+											/>
+										</div>
+										<span className="w-20 shrink-0 text-right font-mono text-sm tabular-nums text-foreground">
+											${total.toFixed(2)}
+										</span>
+										<ChevronDown
+											className={`h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform ${expanded ? "rotate-180" : ""}`}
+										/>
+									</button>
+									{expanded && (
+										<div className="mb-2 ml-11 divide-y divide-border/60 border-l border-border pl-4">
+											{items.map((t) => (
+												<div key={t.id} className="flex items-center gap-3 py-2">
+													<span className="min-w-0 flex-1 truncate text-sm text-foreground">
+														{t.description || new Date(t.transaction_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+													</span>
+													<span className="shrink-0 font-mono text-sm tabular-nums text-primary">
+														${t.amount.toFixed(2)}
+													</span>
+												</div>
+											))}
+										</div>
+									)}
 								</div>
-							))}
-						</div>
-					)}
+							);
+						})}
+					</div>
+				)}
 				</section>
 
 				<section>
@@ -232,12 +264,6 @@ export default function MonthPage() {
 						})}
 					</div>
 				</section>
-			)}
-
-			{monthKey(viewDate) === monthKey(new Date()) && (
-				<div className="mt-12">
-					<QuickAdd />
-				</div>
 			)}
 		</main>
 	);
