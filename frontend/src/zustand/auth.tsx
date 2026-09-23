@@ -16,7 +16,7 @@ interface AuthState {
 	user: User;
 	jwt: string | null;
 	login: (token: string) => void;
-	logout: () => void;
+	logout: () => Promise<void>;
 }
 
 // Create the Zustand store
@@ -40,8 +40,18 @@ const useAuthStore = create(
 					useAuthStore.getState().logout();
 				}
 			},
-			logout: () => {
-				Cookies.remove("jwt");
+			logout: async () => {
+				// jwt is HttpOnly (set by the backend) — only the server can
+				// clear it. POST /logout → ClearCookie("jwt") on the API.
+				try {
+					await fetch(process.env.NEXT_PUBLIC_BACKEND + "/logout", {
+						method: "POST",
+						credentials: "include",
+					});
+				} catch (error) {
+					console.error("Logout error:", error);
+				}
+				Cookies.remove("jwt"); // best-effort; real clear is server-side
 				set({ user: null, jwt: null });
 			},
 		}),

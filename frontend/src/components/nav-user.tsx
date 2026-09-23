@@ -43,8 +43,8 @@ export function NavUser({
 
 	const router = useRouter();
 
-	const handleLogout = () => {
-		logout(); // Clear user state and cookies
+	const handleLogout = async () => {
+		await logout(); // Clear HttpOnly cookie via backend + user state
 		router.push("/sign-in"); // Redirect to sign-in page
 	};
 
