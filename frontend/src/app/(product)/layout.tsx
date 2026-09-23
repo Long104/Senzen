@@ -24,6 +24,7 @@ import { AnimatePresence, motion } from "framer-motion";
 const pageNames: Record<string, string> = {
 	home: "home",
 	plans: "plans",
+	month: "month",
 	plan: "plan",
 	ws: "WebSocket",
 };
