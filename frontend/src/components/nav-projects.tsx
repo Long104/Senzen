@@ -43,7 +43,10 @@ export function NavProjects({
 			<SidebarMenu>
 				{projects.map((item) => (
 					<SidebarMenuItem key={item.name}>
-						<SidebarMenuButton asChild>
+						<SidebarMenuButton
+							asChild
+							className="transition-all duration-200 hover:translate-x-0.5 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+						>
 							<Link href={item.url}>
 								<item.icon />
 								<span>{item.name}</span>

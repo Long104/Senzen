@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/sidebar";
 import { ModeToggle } from "@/components/mode-toggle";
 import { AppSidebar } from "@/components/app-sidebar";
+import { NavUser } from "@/components/nav-user";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -83,9 +84,15 @@ export default function RootLayout({
 									</BreadcrumbList>
 								</Breadcrumb>
 							</div>
-							<Button variant="outline" className="mr-2" asChild>
-								<Link href="/createPlan">+</Link>
+						<div className="mr-4 flex items-center gap-2">
+							<Button variant="outline" asChild>
+								<Link href="/createPlan">
+									<span aria-hidden="true">+</span>
+									<span className="hidden sm:inline">Create Plan</span>
+								</Link>
 							</Button>
+							<NavUser />
+						</div>
 						</header>
 						<AnimatePresence mode="wait">
 							<motion.div
