@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { House, Wallet, CalendarDays } from "lucide-react";
+import { House, Wallet, ChartColumn } from "lucide-react";
 
 import { NavProjects } from "@/components/nav-projects";
 import {
@@ -19,9 +19,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				icon: House,
 			},
 			{
-				name: "month",
-				url: "/month",
-				icon: CalendarDays,
+				name: "report",
+				url: "/report",
+				icon: ChartColumn,
 			},
 			{
 				name: "plans",
