@@ -6,12 +6,18 @@ export async function proxy(req: NextRequest) {
 	const token = req.cookies.get("jwt");
 	const path = req.nextUrl.pathname.replace(/\/+$/, "");
 
-	// OAuth paths — always let through (handled by backend via vercel.json rewrite)
+	// API + OAuth paths — always let through (backend enforces its own
+	// auth; the middleware only guards pages). Includes /api/* variants
+	// since the Vercel proxy moved these under /api.
 	const oauthPaths = [
 		"/google_login",
 		"/google_callback",
 		"/github_login",
 		"/github_callback",
+		"/api/google_login",
+		"/api/google_callback",
+		"/api/github_login",
+		"/api/github_callback",
 	];
 	if (oauthPaths.includes(path)) {
 		return NextResponse.next();
@@ -67,6 +73,6 @@ export const config = {
 		"/",
 		"/sign-in",
 		"/sign-up",
-		"/((?!.*\\..*|_next|google_login|google_callback|github_login|github_callback).*)",
+		"/((?!api|.*\\..*|_next|google_login|google_callback|github_login|github_callback).*)",
 	],
 };
