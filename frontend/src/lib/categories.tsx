@@ -37,3 +37,26 @@ export function categoryMeta(name?: string | null): BuiltInCategory {
 		}
 	);
 }
+
+const CUSTOM_KEY = "senzen-custom-categories";
+
+export function getCustomCategories(): string[] {
+	if (typeof window === "undefined") return [];
+	try {
+		const raw = window.localStorage.getItem(CUSTOM_KEY);
+		const parsed = raw ? JSON.parse(raw) : [];
+		return Array.isArray(parsed) ? parsed.filter((c) => typeof c === "string") : [];
+	} catch {
+		return [];
+	}
+}
+
+export function addCustomCategory(name: string): string {
+	const key = name.trim().toLowerCase();
+	if (!key) return key;
+	const customs = getCustomCategories();
+	if (!customs.includes(key) && !BUILT_IN_CATEGORIES.some((c) => c.key === key)) {
+		window.localStorage.setItem(CUSTOM_KEY, JSON.stringify([...customs, key]));
+	}
+	return key;
+}

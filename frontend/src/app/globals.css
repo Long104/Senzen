@@ -30,6 +30,10 @@
     --ring: 151 73% 44%;
     --radius: 0.375rem;
 
+    /* Destructive: #dc2626 */
+    --destructive: 0 65% 51%;
+    --destructive-foreground: 0 0% 100%;
+
     /* Recharts Color Palette - Composer style */
     --chart-1: 151 73% 44%;
     --chart-2: 190 14% 18%;
@@ -81,6 +85,10 @@
     --border: 38 10% 88%;
     --input: 38 10% 88%;
     --ring: 151 73% 44%;
+
+    /* Destructive: #ef4444 (dark) */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
     /* Recharts Dark Palette */
     --chart-1: 151 73% 44%;
