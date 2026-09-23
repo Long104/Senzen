@@ -1,8 +1,16 @@
 {
   "rewrites": [
     {
-      "source": "/:path*",
+      "source": "/api/:path*",
       "destination": "https://senzen-api.onrender.com/api/:path*"
+    },
+    {
+      "source": "/google_callback",
+      "destination": "https://senzen-api.onrender.com/api/google_callback"
+    },
+    {
+      "source": "/github_callback",
+      "destination": "https://senzen-api.onrender.com/api/github_callback"
     }
   ]
 }

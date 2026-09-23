@@ -12,7 +12,10 @@
 #   https://senzen-api.onrender.com
 # but is exposed publicly as
 #   https://senzen.pantorn.site/api/...
-# via a Vercel catch-all rewrite (see frontend/vercel.json).
+# via a Vercel /api/:path* rewrite (see frontend/vercel.json).
+# The frontend calls the API with NEXT_PUBLIC_BACKEND ending in /api.
+# OAuth callbacks (/google_callback, /github_callback) get explicit
+# rewrites since they live at the site root, not under /api.
 # No DNS record for the backend exists — Vercel proxies the
 # path. No custom domain is configured on Render.
 #
