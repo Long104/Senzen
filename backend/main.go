@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/joho/godotenv"
 	"github.com/long104/Senzen/config"
 	"github.com/long104/Senzen/middleware"
@@ -26,6 +27,9 @@ func main() {
 
 	config.ConnectDatabase()
 	app := fiber.New()
+	// A panicking handler returns 500 instead of killing the process
+	// (a bare panic crashed the whole service on Render — 502/503 cascade).
+	app.Use(recover.New())
 	api := app.Group("/api")
 
 	app.Use(middleware.CORSMiddleware())

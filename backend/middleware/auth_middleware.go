@@ -22,21 +22,18 @@ func checkMiddleware(c *fiber.Ctx) error {
 
 func AuthRequired(c *fiber.Ctx) error {
 	cookie := c.Cookies("jwt")
-	// token, err := jwt.ParseWithClaims(cookie, &jwt.RegisteredClaims{Issuer: "Senzen", ExpiresAt: jwt.NewNumericDate(time.Now().Add(1 * time.Hour))}, func(token *jwt.Token) (interface{}, error) {
-	token, err := jwt.ParseWithClaims(cookie, &jwt.RegisteredClaims{Issuer: "Senzen"}, func(token *jwt.Token) (interface{}, error) {
-		// token, err := jwt.ParseWithClaims(cookie, jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
-		// return []byte("secret"), nil
+	token, err := jwt.ParseWithClaims(cookie, jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(os.Getenv("jwtSecretKey")), nil
 	})
 	if err != nil {
-		return err
+		return c.SendStatus(fiber.StatusUnauthorized)
 	}
 
-	if _, ok := token.Claims.(*jwt.RegisteredClaims); ok && token.Valid {
-		// Extract user_id from JWT claims and store in context
-		// so handlers can use c.Locals("user_id") instead of URL/query params
-		rawClaims := token.Claims.(jwt.MapClaims)
-		if userID, ok := rawClaims["user_id"].(float64); ok {
+	// Tokens are minted as MapClaims (auth_controller, google, github).
+	// ctx:mistake:jwt-claims-type — parsing into RegisteredClaims dropped
+	// user_id and the MapClaims type assertion panicked, crashing the service.
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		if userID, ok := claims["user_id"].(float64); ok {
 			c.Locals("user_id", uint(userID))
 		}
 	} else {
