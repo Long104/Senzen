@@ -1,13 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import {
-	BadgeCheck,
-	Bell,
-	ChevronsUpDown,
-	CreditCard,
-	LogOut,
-} from "lucide-react";
+import { ChevronsUpDown, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -15,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
-	DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
@@ -108,27 +101,15 @@ export function NavUser() {
 						</div>
 					</div>
 				</DropdownMenuLabel>
-				<DropdownMenuSeparator />
-				<DropdownMenuGroup>
-					<DropdownMenuItem>
-						<BadgeCheck />
-						Account
-					</DropdownMenuItem>
-					<DropdownMenuItem>
-						<CreditCard />
-						Billing
-					</DropdownMenuItem>
-					<DropdownMenuItem>
-						<Bell />
-						Notifications
-					</DropdownMenuItem>
-				</DropdownMenuGroup>
-				<DropdownMenuSeparator />
-				<DropdownMenuItem onClick={handleLogout}>
-					<LogOut />
-					Log out
-				</DropdownMenuItem>
-			</DropdownMenuContent>
+			<DropdownMenuSeparator />
+			<DropdownMenuItem
+				onClick={handleLogout}
+				className="text-muted-foreground focus:bg-destructive/10 focus:text-destructive"
+			>
+				<LogOut />
+				Log out
+			</DropdownMenuItem>
+		</DropdownMenuContent>
 		</DropdownMenu>
 	);
 }

@@ -20,6 +20,12 @@ func CreateTransaction(c *fiber.Ctx) error {
 		log.Println("Error parsing request body:", err) // Log parsing error
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Cannot parse JSON"})
 	}
+
+	// Owner comes from the JWT, never the body
+	if userID, ok := c.Locals("user_id").(uint); ok {
+		transaction.UserID = int64(userID)
+	}
+
 	if err := config.DB.Create(&transaction).Error; err != nil {
 
 		log.Println("Error saving plan to database:", err) // Log database error
@@ -32,6 +38,47 @@ func CreateTransaction(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(transaction)
+}
+
+// DeleteUserTransaction deletes one of the signed-in user's expenses by id
+// (works with or without a plan).
+func DeleteUserTransaction(c *fiber.Ctx) error {
+	userID, ok := c.Locals("user_id").(uint)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Unauthorized"})
+	}
+
+	id := c.Params("id")
+	if err := config.DB.
+		Where("id = ? AND user_id = ?", id, userID).
+		Delete(&models.Transaction{}).Error; err != nil {
+		log.Println("Error deleting transaction:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Cannot delete transaction"})
+	}
+
+	return c.SendStatus(fiber.StatusNoContent)
+}
+
+// GetUserTransactions returns every expense owned by the signed-in user
+// (across all plans), newest first — the home feed.
+func GetUserTransactions(c *fiber.Ctx) error {
+	userID, ok := c.Locals("user_id").(uint)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Unauthorized"})
+	}
+
+	var transactions []models.Transaction
+	if err := config.DB.
+		Preload("Category").
+		Where("user_id = ?", userID).
+		Order("transaction_date DESC").
+		Limit(300).
+		Find(&transactions).Error; err != nil {
+		log.Println("Error fetching transactions:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Cannot fetch transactions"})
+	}
+
+	return c.JSON(transactions)
 }
 
 func GetTransaction(c *fiber.Ctx) error {

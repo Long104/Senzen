@@ -18,6 +18,8 @@ func SetupRoutes(app fiber.Router) {
 	// transaction
 	protected.Post("/transaction", handlers.CreateTransaction)
 	protected.Delete("/transaction", handlers.DeleteTransaction)
+	protected.Delete("/transactions/:id", handlers.DeleteUserTransaction)
+	protected.Get("/transactions", handlers.GetUserTransactions)
 	protected.Get("/transaction/:planId", handlers.GetPlanTransactions)
 
 	// category

@@ -49,5 +49,20 @@ func ConnectDatabase() {
 	if err := DB.AutoMigrate(&models.User{}, &models.Category{}, &models.Transaction{}, &models.Budget{}, &models.Plan{}); err != nil {
 		log.Fatalf("failed to migrate database models: %v", err)
 	}
+
+	// Person-centric migration: expenses may live outside a plan.
+	// Idempotent — safe to run on every boot.
+	migrationStmts := []string{
+		`ALTER TABLE "transactions" ALTER COLUMN "plan_id" DROP NOT NULL`,
+		`ALTER TABLE "transactions" ALTER COLUMN "budget_id" DROP NOT NULL`,
+		`ALTER TABLE "transactions" ALTER COLUMN "category_id" DROP NOT NULL`,
+		`UPDATE "transactions" t SET "user_id" = p."user_id" FROM "plans" p WHERE t."plan_id" = p."id" AND (t."user_id" IS NULL OR t."user_id" = 0)`,
+	}
+	for _, stmt := range migrationStmts {
+		if err := DB.Exec(stmt).Error; err != nil {
+			log.Printf("migration stmt skipped: %v", err)
+		}
+	}
+
 	fmt.Println("Database connection and migrations completed!")
 }

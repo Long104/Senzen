@@ -1,12 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-	PlusCircle,
-	Settings2,
-	Newspaper,
-	House,
-} from "lucide-react";
+import { House, Wallet, Newspaper } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavProjects } from "@/components/nav-projects";
@@ -25,53 +20,29 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	const data = {
 		navMain: [
 			{
-				title: "Plan",
+				title: "plans",
 				url: "#",
 				icon: Newspaper,
 				items: isLoading
-					? [
-							{ title: "Loading...", url: "#" },
-							{ title: "Loading...", url: "#" },
-						]
+					? [{ title: "loading...", url: "#" }]
 					: plans?.length
-						? plans.map((plan: Record<string, unknown>) => ({
-								title: (plan?.name as string) || "Unnamed Plan",
-								url: `/plan/${plan?.name}/?id=${plan.id}`,
-							}))
-						: [{ title: "No plans yet", url: "/createPlan" }],
-			},
-			{
-				title: "News & Forums",
-				url: "#",
-				icon: Newspaper,
-				items: [
-					{ title: "Money", url: "#" },
-					{ title: "Saving", url: "#" },
-					{ title: "Story", url: "#" },
-				],
-			},
-			{
-				title: "Settings",
-				url: "#",
-				icon: Settings2,
-				items: [
-					{ title: "General", url: "#" },
-					{ title: "Team", url: "#" },
-					{ title: "Billing", url: "#" },
-					{ title: "Limits", url: "#" },
-				],
+					? plans.map((plan: Record<string, unknown>) => ({
+							title: (plan?.name as string) || "unnamed plan",
+							url: `/plan/${plan?.name}/?id=${plan.id}`,
+						}))
+					: [{ title: "no plans yet", url: "/plans" }],
 			},
 		],
 		projects: [
 			{
-				name: "Home",
+				name: "home",
 				url: "/home",
 				icon: House,
 			},
 			{
-				name: "Create Plan",
-				url: "/createPlan",
-				icon: PlusCircle,
+				name: "plans",
+				url: "/plans",
+				icon: Wallet,
 			},
 		],
 	};
@@ -79,8 +50,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	return (
 		<Sidebar collapsible="icon" {...props}>
 			<SidebarContent>
-				<NavMain items={data.navMain} />
 				<NavProjects projects={data.projects} />
+				<NavMain items={data.navMain} />
 			</SidebarContent>
 			<SidebarRail />
 		</Sidebar>

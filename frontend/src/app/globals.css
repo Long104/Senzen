@@ -4,8 +4,8 @@
 
 @layer base {
   :root {
-    /* Canvas / Background: #f6f2ee (HSL 38 22% 95%) */
-    --background: 38 22% 95%;
+    /* Canvas / Background: #ebedee (HSL 210 9% 93%) — Composer cool canvas */
+    --background: 210 9% 93%;
     --foreground: 190 16% 8%;
 
     /* Card / Surface: #ffffff */
@@ -18,24 +18,24 @@
     --primary: 151 73% 44%;
     --primary-foreground: 190 16% 8%;
 
-    /* Muted Ink / Secondary: #273234 / #666666 (HSL 190 14% 18%) */
-    --secondary: 190 14% 18%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 38 10% 88%;
-    --muted-foreground: 190 14% 18%;
+    /* Muted Ink / Secondary: cool-tinted neutrals */
+    --secondary: 210 8% 90%;
+    --secondary-foreground: 190 16% 8%;
+    --muted: 210 8% 90%;
+    --muted-foreground: 210 5% 42%;
 
-    /* Border / Hairlines: #e5e2dd (subtle cream-tinted hairline) */
-    --border: 38 10% 88%;
-    --input: 38 10% 88%;
+    /* Border / Hairlines: cool gray-mint */
+    --border: 210 8% 88%;
+    --input: 210 8% 88%;
     --ring: 151 73% 44%;
     --radius: 0.375rem;
 
     /* Recharts Color Palette - Composer style */
     --chart-1: 151 73% 44%;
     --chart-2: 190 14% 18%;
-    --chart-3: 38 10% 88%;
+    --chart-3: 210 8% 88%;
     --chart-4: 0 0% 100%;
-    --chart-5: 38 22% 95%;
+    --chart-5: 210 9% 93%;
 
     /* Financial Semantic Tokens */
     --color-surplus-olive: 152 40% 30%; /* Surplus Olive */
@@ -46,13 +46,13 @@
     --color-recurring-slate: 215 19% 35%; /* Recurring Slate */
 
     /* Sidebar */
-    --sidebar-background: 38 22% 95%;
+    --sidebar-background: 210 9% 93%;
     --sidebar-foreground: 190 16% 8%;
     --sidebar-primary: 151 73% 44%;
     --sidebar-primary-foreground: 190 16% 8%;
-    --sidebar-accent: 38 10% 88%;
+    --sidebar-accent: 210 8% 90%;
     --sidebar-accent-foreground: 190 16% 8%;
-    --sidebar-border: 38 10% 88%;
+    --sidebar-border: 210 8% 88%;
     --sidebar-ring: 151 73% 44%;
   }
 
@@ -110,11 +110,6 @@
 }
 
 @layer utilities {
-  /* Add filter manually as Tailwind doesn't have direct support */
-  input[type="date"]::-webkit-calendar-picker-indicator {
-    filter: invert(1);
-  }
-
   /* Landing-page theme lock: render identically regardless of stored theme key */
   .light {
     color-scheme: light;
