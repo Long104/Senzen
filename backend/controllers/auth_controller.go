@@ -86,7 +86,18 @@ func LoginUser(c *fiber.Ctx) error {
 }
 
 func LogoutUser(c *fiber.Ctx) error {
-	// Clear the JWT cookie
-	c.ClearCookie("jwt")
+	// ClearCookie without Path scopes the deletion cookie to the request
+	// path (/api), so the browser never deletes the Path=/ jwt cookie.
+	// The clearing cookie must mirror the login cookie's attributes.
+	// ctx:mistake:clearcookie-path
+	c.Cookie(&fiber.Cookie{
+		Name:     "jwt",
+		Value:    "",
+		Path:     "/",
+		Expires:  time.Now().Add(-time.Hour),
+		HTTPOnly: true,
+		Secure:   true,
+		SameSite: "Lax",
+	})
 	return c.JSON(fiber.Map{"message": "Successfully logged out"})
 }
