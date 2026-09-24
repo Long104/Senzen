@@ -6,6 +6,7 @@ import type { Transaction } from "@/hooks/useTransactions";
 import { useDeleteTransaction } from "@/hooks/useTransactions";
 import { categoryMeta } from "@/lib/categories";
 import { useCurrency } from "@/lib/currency";
+import { EditExpense } from "@/components/edit-expense";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -36,10 +37,24 @@ function dayLabel(dateStr: string): string {
 	});
 }
 
-function FeedRow({ t, onDelete, symbol }: { t: Transaction; onDelete: (t: Transaction) => void; symbol: string }) {
+function FeedRow({
+	t,
+	onDelete,
+	onEdit,
+	symbol,
+}: {
+	t: Transaction;
+	onDelete: (t: Transaction) => void;
+	onEdit: (t: Transaction) => void;
+	symbol: string;
+}) {
 	const meta = categoryMeta(t.category_name || t.category?.name);
 	return (
-		<div className="group flex items-center gap-3 py-2.5">
+		<div
+			onClick={() => onEdit(t)}
+			title="edit"
+			className="group -mx-3 flex cursor-pointer items-center gap-3 rounded-md px-3 py-2.5 transition-colors hover:bg-card"
+		>
 			<meta.icon
 				className="h-4 w-4 shrink-0 text-muted-foreground"
 				strokeWidth={1.5}
@@ -58,7 +73,10 @@ function FeedRow({ t, onDelete, symbol }: { t: Transaction; onDelete: (t: Transa
 			</span>
 			<button
 				type="button"
-				onClick={() => onDelete(t)}
+				onClick={(e) => {
+					e.stopPropagation();
+					onDelete(t);
+				}}
 				aria-label="delete expense"
 				className="shrink-0 rounded-md p-1 text-muted-foreground opacity-0 transition-all hover:text-destructive focus-visible:opacity-100 group-hover:opacity-100"
 			>
@@ -76,6 +94,7 @@ export function ExpenseFeed({
 	const { deleteTransactionMutation } = useDeleteTransaction();
 	const [deletingId, setDeletingId] = useState<number | null>(null);
 	const [confirmTx, setConfirmTx] = useState<Transaction | null>(null);
+	const [editing, setEditing] = useState<Transaction | null>(null);
 	const { symbol } = useCurrency();
 
 	function handleDelete(id: number) {
@@ -114,12 +133,18 @@ export function ExpenseFeed({
 								key={t.id}
 								className={deletingId === t.id ? "opacity-40 transition-opacity" : "transition-opacity"}
 							>
-								<FeedRow t={t} onDelete={setConfirmTx} symbol={symbol} />
+								<FeedRow t={t} onDelete={setConfirmTx} onEdit={setEditing} symbol={symbol} />
 							</div>
 						))}
 					</div>
 				</section>
 			))}
+
+			<EditExpense
+				tx={editing}
+				open={!!editing}
+				onOpenChange={(open) => !open && setEditing(null)}
+			/>
 
 			<AlertDialog
 				open={!!confirmTx}

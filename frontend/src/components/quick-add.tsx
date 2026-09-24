@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ChevronDown, Plus } from "lucide-react";
-import { BUILT_IN_CATEGORIES, addCustomCategory, getCustomCategories } from "@/lib/categories";
+import { addCustomCategory } from "@/lib/categories";
 import { CURRENCIES, setCurrency, useCurrency } from "@/lib/currency";
 import {
 	DropdownMenu,
@@ -10,25 +10,16 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { CategoryTiles } from "@/components/category-tiles";
 import { useCreateTransaction } from "@/hooks/useTransactions";
 import { useToast } from "@/hooks/use-toast";
+import { cleanAmountInput } from "@/lib/amount";
 import { cn } from "@/lib/utils";
-
-function cleanAmountInput(raw: string): string {
-	const stripped = raw.replace(/[^0-9.]/g, "");
-	const firstDot = stripped.indexOf(".");
-	if (firstDot === -1) return stripped;
-	return (
-		stripped.slice(0, firstDot + 1) +
-		stripped.slice(firstDot + 1).replace(/\./g, "")
-	);
-}
 
 export function QuickAdd({ planId }: { planId?: number }) {
 	const [amount, setAmount] = useState("");
 	const [category, setCategory] = useState<string | null>(null);
 	const [note, setNote] = useState("");
-	const [customs, setCustoms] = useState<string[]>([]);
 	const [addingCustom, setAddingCustom] = useState(false);
 	const [customName, setCustomName] = useState("");
 	const { createTransactionMutation } = useCreateTransaction();
@@ -38,13 +29,6 @@ export function QuickAdd({ planId }: { planId?: number }) {
 	const parsed = parseFloat(amount);
 	const hasAmount = !isNaN(parsed) && parsed > 0;
 	const active = amount.trim().length > 0;
-	const allCategories = [...BUILT_IN_CATEGORIES.map((c) => c.key), ...customs];
-
-	function ensureCustoms() {
-		if (customs.length === 0 && typeof window !== "undefined") {
-			setCustoms(getCustomCategories());
-		}
-	}
 
 	function submit() {
 		if (!active || isNaN(parsed) || parsed <= 0) {
@@ -80,7 +64,6 @@ export function QuickAdd({ planId }: { planId?: number }) {
 		e.preventDefault();
 		const key = addCustomCategory(customName);
 		if (key) {
-			setCustoms(getCustomCategories());
 			setCategory(key);
 		}
 		setCustomName("");
@@ -119,10 +102,7 @@ export function QuickAdd({ planId }: { planId?: number }) {
 
 				<input
 					value={amount}
-					onChange={(e) => {
-						setAmount(cleanAmountInput(e.target.value));
-						ensureCustoms();
-					}}
+					onChange={(e) => setAmount(cleanAmountInput(e.target.value))}
 					inputMode="decimal"
 					placeholder="0.00"
 					aria-label="amount"
@@ -156,44 +136,10 @@ export function QuickAdd({ planId }: { planId?: number }) {
 					active ? "mt-3 max-h-64 opacity-100" : "max-h-0 opacity-0",
 				)}
 			>
-				{allCategories.map((key) => {
-					const meta = BUILT_IN_CATEGORIES.find((c) => c.key === key);
-					const label = meta ? meta.label : key;
-					const selected = category === key;
-					return (
-						<button
-							key={key}
-							type="button"
-							onClick={() => setCategory(key)}
-						className={cn(
-							"flex flex-col items-center gap-1.5 rounded-lg border bg-card px-2 py-2.5 transition-colors duration-200",
-							selected
-								? "border-primary bg-primary/10"
-								: "border-border hover:border-primary/50",
-						)}
-						>
-							{meta ? (
-								<meta.icon
-									className={cn("h-4 w-4", selected ? "text-primary" : "text-muted-foreground")}
-									strokeWidth={1.5}
-								/>
-							) : (
-								<span className={cn("h-4 w-4 text-center text-sm leading-4", selected ? "text-primary" : "text-muted-foreground")}>
-									{label[0]}
-								</span>
-							)}
-							<span className="text-[11px] leading-none text-foreground">
-								{label.split(" ")[0]}
-							</span>
-						</button>
-					);
-				})}
+				<CategoryTiles selected={category} onSelect={setCategory} />
 				<button
 					type="button"
-					onClick={() => {
-						ensureCustoms();
-						setAddingCustom(true);
-					}}
+					onClick={() => setAddingCustom(true)}
 					className="flex flex-col items-center gap-1.5 rounded-lg border border-dashed border-border bg-card px-2 py-2.5 transition-colors duration-200 hover:border-primary/50"
 					aria-label="new category"
 				>

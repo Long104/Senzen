@@ -1,6 +1,6 @@
 "use client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchGet, fetchPost, fetchDelete } from "@/fetch/client";
+import { fetchGet, fetchPost, fetchUpdate, fetchDelete } from "@/fetch/client";
 import useAuthStore from "@/zustand/auth";
 
 export type Transaction = {
@@ -48,6 +48,28 @@ export function useCreateTransaction() {
 	});
 
 	return { createTransactionMutation };
+}
+
+export function useUpdateTransaction() {
+	const queryClient = useQueryClient();
+
+	const updateTransactionMutation = useMutation({
+		mutationFn: ({
+			id,
+			...data
+		}: {
+			id: number;
+			amount?: number;
+			description?: string;
+			category_name?: string;
+		}) => fetchUpdate("transactions", id, data),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["transactions"] });
+			queryClient.invalidateQueries({ queryKey: ["plans"] });
+		},
+	});
+
+	return { updateTransactionMutation };
 }
 
 export function useDeleteTransaction() {

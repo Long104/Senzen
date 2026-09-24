@@ -102,19 +102,54 @@ func GetPlanTransactions(c *fiber.Ctx) error {
 	return c.JSON(transactions)
 }
 
-func UpdateTransaction(c *fiber.Ctx) error {
+// UpdateUserTransaction edits one of the signed-in user's expenses by id —
+// amount, note, or category (owner, plan and date stay untouched).
+func UpdateUserTransaction(c *fiber.Ctx) error {
+	userID, ok := c.Locals("user_id").(uint)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Unauthorized"})
+	}
+
 	id := c.Params("id")
 	var transaction models.Transaction
-	if err := config.DB.First(&transaction, id).Error; err != nil {
+	if err := config.DB.
+		Where("id = ? AND user_id = ?", id, userID).
+		First(&transaction).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Transaction not found"})
 	}
-	if err := c.BodyParser(&transaction); err != nil {
+
+	// Partial update: only accept the fields the edit dialog owns.
+	var body struct {
+		Amount       *float64 `json:"amount"`
+		Description  *string  `json:"description"`
+		CategoryName *string  `json:"category_name"`
+	}
+	if err := c.BodyParser(&body); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Cannot parse JSON"})
 	}
+
+	if body.Amount != nil {
+		transaction.Amount = *body.Amount
+	}
+	if body.Description != nil {
+		transaction.Description = *body.Description
+	}
+	if body.CategoryName != nil {
+		transaction.CategoryName = *body.CategoryName
+		transaction.CategoryID = nil // category_name is the person-centric source of truth
+	}
+
 	if err := config.DB.Save(&transaction).Error; err != nil {
+		log.Println("Error updating transaction:", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Cannot update transaction"})
 	}
-	return c.JSON(transaction)
+
+	var fresh models.Transaction
+	if err := config.DB.Preload("Category").First(&fresh, transaction.ID).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Cannot update transaction"})
+	}
+
+	return c.JSON(fresh)
 }
 
 // func DeleteTransaction(c *fiber.Ctx) error {

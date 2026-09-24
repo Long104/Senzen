@@ -18,6 +18,7 @@ func SetupRoutes(app fiber.Router) {
 	// transaction
 	protected.Post("/transaction", handlers.CreateTransaction)
 	protected.Delete("/transaction", handlers.DeleteTransaction)
+	protected.Put("/transactions/:id", handlers.UpdateUserTransaction)
 	protected.Delete("/transactions/:id", handlers.DeleteUserTransaction)
 	protected.Get("/transactions", handlers.GetUserTransactions)
 	protected.Get("/transaction/:planId", handlers.GetPlanTransactions)

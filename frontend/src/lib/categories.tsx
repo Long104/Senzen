@@ -57,6 +57,7 @@ export function addCustomCategory(name: string): string {
 	const customs = getCustomCategories();
 	if (!customs.includes(key) && !BUILT_IN_CATEGORIES.some((c) => c.key === key)) {
 		window.localStorage.setItem(CUSTOM_KEY, JSON.stringify([...customs, key]));
+		window.dispatchEvent(new Event("senzen-custom-categories"));
 	}
 	return key;
 }
