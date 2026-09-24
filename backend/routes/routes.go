@@ -21,6 +21,7 @@ func SetupRoutes(app fiber.Router) {
 	protected.Put("/transactions/:id", handlers.UpdateUserTransaction)
 	protected.Delete("/transactions/:id", handlers.DeleteUserTransaction)
 	protected.Get("/transactions", handlers.GetUserTransactions)
+	protected.Get("/transactions/export", handlers.ExportUserTransactions)
 	protected.Get("/transaction/:planId", handlers.GetPlanTransactions)
 
 	// category

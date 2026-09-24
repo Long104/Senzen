@@ -4,8 +4,11 @@ import (
 	// "fmt"
 	// "log"
 
+	"bytes"
+	"encoding/csv"
 	"log"
 	"strconv"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/long104/Senzen/config"
@@ -38,6 +41,47 @@ func CreateTransaction(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(transaction)
+}
+
+// ExportUserTransactions streams the signed-in user's full history as CSV —
+// data ownership, no row limit.
+func ExportUserTransactions(c *fiber.Ctx) error {
+	userID, ok := c.Locals("user_id").(uint)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Unauthorized"})
+	}
+
+	var transactions []models.Transaction
+	if err := config.DB.
+		Where("user_id = ?", userID).
+		Order("transaction_date DESC").
+		Find(&transactions).Error; err != nil {
+		log.Println("Error exporting transactions:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Cannot export transactions"})
+	}
+
+	var buf bytes.Buffer
+	w := csv.NewWriter(&buf)
+	_ = w.Write([]string{"id", "date", "amount", "category", "note", "plan_id"})
+	for _, t := range transactions {
+		planID := ""
+		if t.PlanID != nil {
+			planID = strconv.FormatInt(*t.PlanID, 10)
+		}
+		_ = w.Write([]string{
+			strconv.FormatInt(t.ID, 10),
+			t.TransactionDate.Format(time.RFC3339),
+			strconv.FormatFloat(t.Amount, 'f', -1, 64),
+			t.CategoryName,
+			t.Description,
+			planID,
+		})
+	}
+	w.Flush()
+
+	c.Set("Content-Type", "text/csv")
+	c.Set("Content-Disposition", "attachment; filename=senzen-expenses.csv")
+	return c.Send(buf.Bytes())
 }
 
 // DeleteUserTransaction deletes one of the signed-in user's expenses by id

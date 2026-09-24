@@ -17,6 +17,7 @@ import { z } from "zod";
 import { PlanSchema } from "@/types";
 import { cn } from "@/lib/utils";
 import { useCurrency } from "@/lib/currency";
+import { ExportCsv } from "@/components/export-csv";
 
 type Plan = z.infer<typeof PlanSchema>;
 type Mode = "month" | "year" | "all";
@@ -204,26 +205,29 @@ export default function ReportPage() {
 						</button>
 					)}
 				</div>
-				<div className="flex rounded-lg border border-border bg-card p-0.5">
-					{(["month", "year", "all"] as Mode[]).map((m) => (
-						<button
-							key={m}
-							type="button"
-							onClick={() => {
-								setMode(m);
-								setExpandedCategory(null);
-								setOffset(0);
-							}}
-							className={cn(
-								"rounded-md px-3 py-1 text-sm lowercase transition-colors",
-								mode === m
-									? "bg-primary/10 text-primary"
-									: "text-muted-foreground hover:text-foreground",
-							)}
-						>
-							{m}
-						</button>
-					))}
+				<div className="flex items-center gap-2">
+					<ExportCsv />
+					<div className="flex rounded-lg border border-border bg-card p-0.5">
+						{(["month", "year", "all"] as Mode[]).map((m) => (
+							<button
+								key={m}
+								type="button"
+								onClick={() => {
+									setMode(m);
+									setExpandedCategory(null);
+									setOffset(0);
+								}}
+								className={cn(
+									"rounded-md px-3 py-1 text-sm lowercase transition-colors",
+									mode === m
+										? "bg-primary/10 text-primary"
+										: "text-muted-foreground hover:text-foreground",
+								)}
+							>
+								{m}
+							</button>
+						))}
+					</div>
 				</div>
 			</div>
 

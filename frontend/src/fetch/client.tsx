@@ -18,6 +18,22 @@ export async function fetchGet(url: string): Promise<any> {
 	return await res.json();
 }
 
+export async function fetchGetText(url: string): Promise<string> {
+	const jwt = Cookies.get("jwt");
+	const res = await fetch(process.env.NEXT_PUBLIC_BACKEND + `/${url}`, {
+		method: "GET",
+		headers: {
+			Authorization: `Bearer ${jwt}`,
+		},
+	});
+
+	if (!res.ok) {
+		throw new Error(`Failed to fetch ${url}: ${res.statusText}`);
+	}
+
+	return await res.text();
+}
+
 export async function fetchPost(url: string, data: any): Promise<any> {
 	const jwt = Cookies.get("jwt");
 	const res = await fetch(process.env.NEXT_PUBLIC_BACKEND + `/${url}`, {
