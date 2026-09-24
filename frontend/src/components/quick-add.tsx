@@ -89,65 +89,61 @@ export function QuickAdd({ planId }: { planId?: number }) {
 
 	return (
 		<div className="w-full">
-			<div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
-				<div className="flex items-center gap-2 rounded-lg border border-border bg-card px-4 h-14 sm:w-44 shrink-0 focus-within:border-primary/50 transition-colors">
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<button
-								type="button"
-								aria-label="change currency"
-								title={code}
-								className="font-mono text-lg text-primary select-none hover:text-primary/80"
+			<div className="flex items-center gap-3 rounded-full border border-border bg-card h-16 pl-5 pr-2 shadow-[0_2px_12px_rgba(16,21,22,0.05)] transition-colors focus-within:border-primary/60">
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<button
+							type="button"
+							aria-label="change currency"
+							title={`change currency · ${code}`}
+							className="font-mono text-lg text-primary select-none transition-opacity hover:opacity-70"
+						>
+							{symbol}
+						</button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align="start">
+						{CURRENCIES.map((c) => (
+							<DropdownMenuItem
+								key={c.code}
+								onClick={() => setCurrency(c.code)}
+								className={c.code === code ? "text-primary" : ""}
 							>
-								{symbol}
-							</button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align="start">
-							{CURRENCIES.map((c) => (
-								<DropdownMenuItem
-									key={c.code}
-									onClick={() => setCurrency(c.code)}
-									className={c.code === code ? "text-primary" : ""}
-								>
-									<span className="w-6 font-mono">{c.symbol}</span> {c.code}
-								</DropdownMenuItem>
-							))}
-						</DropdownMenuContent>
-					</DropdownMenu>
-					<input
-						value={amount}
-						onChange={(e) => {
-							setAmount(cleanAmountInput(e.target.value));
-							ensureCustoms();
-						}}
-						inputMode="decimal"
-						placeholder="0.00"
-						aria-label="amount"
-						className="min-w-0 w-full bg-transparent outline-none font-mono text-lg tabular-nums placeholder:text-muted-foreground/70"
-					/>
-				</div>
+								<span className="w-6 font-mono">{c.symbol}</span> {c.code}
+							</DropdownMenuItem>
+						))}
+					</DropdownMenuContent>
+				</DropdownMenu>
 
-				<div className="flex items-center rounded-lg border border-border bg-card px-4 h-14 flex-1 focus-within:border-primary/50 transition-colors">
-					<input
-						value={note}
-						onChange={(e) => setNote(e.target.value)}
-						placeholder="what was it for? — e.g. lunch with friends"
-						aria-label="note"
-						className="w-full bg-transparent outline-none text-sm text-foreground placeholder:text-muted-foreground/70"
-					/>
-				</div>
+				<input
+					value={amount}
+					onChange={(e) => {
+						setAmount(cleanAmountInput(e.target.value));
+						ensureCustoms();
+					}}
+					inputMode="decimal"
+					placeholder="0.00"
+					aria-label="amount"
+					className="min-w-0 w-20 shrink-0 bg-transparent outline-none font-mono text-lg tabular-nums placeholder:text-muted-foreground/70"
+				/>
+
+				<span className="h-6 w-px shrink-0 bg-border" aria-hidden="true" />
+
+				<input
+					value={note}
+					onChange={(e) => setNote(e.target.value)}
+					placeholder="what was it for?"
+					aria-label="note"
+					className="min-w-0 flex-1 bg-transparent outline-none text-sm text-foreground placeholder:text-muted-foreground/70"
+				/>
 
 				<button
 					type="button"
 					onClick={submit}
 					disabled={createTransactionMutation.isPending}
 					aria-label="add expense"
-					className={cn(
-						"h-14 w-full sm:w-14 shrink-0 rounded-full bg-primary text-primary-foreground transition-all hover:bg-primary/90 hover:scale-105 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2",
-					)}
+					className="h-11 w-11 shrink-0 rounded-full bg-primary text-primary-foreground transition-all hover:bg-primary/90 hover:scale-105 active:scale-95 disabled:opacity-50 flex items-center justify-center"
 				>
-					<Plus className={cn("h-5 w-5 transition-transform", hasAmount && category && "rotate-90")} />
-					<span className="sm:hidden text-sm font-medium">add</span>
+					<Plus className={cn("h-5 w-5 transition-transform duration-300", hasAmount && category && "rotate-90")} />
 				</button>
 			</div>
 
