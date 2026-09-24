@@ -37,3 +37,6 @@ qa-screenshots/
 
 # root-level working images (source assets; shipped assets live in frontend/public/)
 /*.png
+
+# image-generation mockups (local only)
+.mockups/

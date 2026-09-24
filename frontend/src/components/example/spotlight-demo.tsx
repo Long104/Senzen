@@ -66,6 +66,7 @@ export function HeroComposer() {
 							</Link>
 						</div>
 					</div>
+				</div>
 			</div>
 		</section>
 	);
