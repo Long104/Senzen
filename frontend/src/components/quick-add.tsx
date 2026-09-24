@@ -123,7 +123,7 @@ export function QuickAdd({ planId }: { planId?: number }) {
 					inputMode="decimal"
 					placeholder="0.00"
 					aria-label="amount"
-					className="min-w-0 w-20 shrink-0 bg-transparent outline-none font-mono text-lg tabular-nums placeholder:text-muted-foreground/70"
+					className="min-w-0 w-32 shrink-0 bg-transparent outline-none font-mono text-lg tabular-nums placeholder:text-muted-foreground/70"
 				/>
 
 				<span className="h-6 w-px shrink-0 bg-border" aria-hidden="true" />
@@ -131,9 +131,9 @@ export function QuickAdd({ planId }: { planId?: number }) {
 				<input
 					value={note}
 					onChange={(e) => setNote(e.target.value)}
-					placeholder="what was it for?"
+					placeholder="note (e.g. eat out)"
 					aria-label="note"
-					className="min-w-0 flex-1 bg-transparent outline-none text-sm text-foreground placeholder:text-muted-foreground/70"
+					className="min-w-0 flex-1 bg-transparent outline-none text-sm text-foreground placeholder:text-muted-foreground/70 pl-1"
 				/>
 
 				<button
