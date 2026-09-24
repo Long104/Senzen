@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { ChevronDown, Plus } from "lucide-react";
 import { BUILT_IN_CATEGORIES, addCustomCategory, getCustomCategories } from "@/lib/categories";
 import { CURRENCIES, setCurrency, useCurrency } from "@/lib/currency";
 import {
@@ -96,9 +96,10 @@ export function QuickAdd({ planId }: { planId?: number }) {
 							type="button"
 							aria-label="change currency"
 							title={`change currency · ${code}`}
-							className="font-mono text-lg text-primary select-none transition-opacity hover:opacity-70"
+							className="flex shrink-0 items-center gap-1.5 rounded-full py-1 pr-2 font-mono text-lg text-primary select-none transition-colors hover:bg-primary/5 hover:opacity-80"
 						>
 							{symbol}
+							<ChevronDown className="h-3 w-3 opacity-60" strokeWidth={2} />
 						</button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="start">
@@ -113,6 +114,8 @@ export function QuickAdd({ planId }: { planId?: number }) {
 						))}
 					</DropdownMenuContent>
 				</DropdownMenu>
+
+				<span className="h-6 w-px shrink-0 bg-border" aria-hidden="true" />
 
 				<input
 					value={amount}
@@ -162,12 +165,12 @@ export function QuickAdd({ planId }: { planId?: number }) {
 							key={key}
 							type="button"
 							onClick={() => setCategory(key)}
-							className={cn(
-								"flex flex-col items-center gap-1.5 rounded-lg border bg-card px-2 py-2.5 transition-all duration-200 hover:-translate-y-0.5",
-								selected
-									? "border-primary bg-primary/10 scale-[1.03]"
-									: "border-border hover:border-primary/50",
-							)}
+						className={cn(
+							"flex flex-col items-center gap-1.5 rounded-lg border bg-card px-2 py-2.5 transition-colors duration-200",
+							selected
+								? "border-primary bg-primary/10"
+								: "border-border hover:border-primary/50",
+						)}
 						>
 							{meta ? (
 								<meta.icon
@@ -191,7 +194,7 @@ export function QuickAdd({ planId }: { planId?: number }) {
 						ensureCustoms();
 						setAddingCustom(true);
 					}}
-					className="flex flex-col items-center gap-1.5 rounded-lg border border-dashed border-border bg-card px-2 py-2.5 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/50"
+					className="flex flex-col items-center gap-1.5 rounded-lg border border-dashed border-border bg-card px-2 py-2.5 transition-colors duration-200 hover:border-primary/50"
 					aria-label="new category"
 				>
 					<Plus className="h-4 w-4 text-muted-foreground" strokeWidth={1.5} />
