@@ -16,23 +16,6 @@ import {
 } from "@/components/ui/navigation-menu";
 import { ProfileDropdown } from "@/components/ui/profile-dropdown";
 
-const pricingItems: { title: string; href: string; description: string }[] = [
-	{
-		title: "Free",
-		href: "/pricing",
-		description: "Get started with basic budgeting tools",
-	},
-	{
-		title: "Pro",
-		href: "/pricing",
-		description: "Advanced planning and analytics",
-	},
-	{
-		title: "Enterprise",
-		href: "/pricing",
-		description: "Team collaboration and custom integrations",
-	},
-];
 
 export function NavigationMenuDemo() {
 	return (

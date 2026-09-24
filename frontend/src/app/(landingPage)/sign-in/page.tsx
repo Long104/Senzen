@@ -1,30 +1,17 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+
 import Link from "next/link";
 import { Github } from "lucide-react";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
 
 import useAuthStore from "@/zustand/auth";
-import { Footer } from "@example/footer";
 
 export default function LoginPage() {
 	const [password, setPassword] = useState("");
 	const [email, setEmail] = useState("");
 	const router = useRouter();
-	const [data, setData] = useState<boolean>(false);
+	const [error, setError] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const logins = useAuthStore((state) => state.login);
@@ -33,6 +20,7 @@ export default function LoginPage() {
 		event.preventDefault();
 		if (isSubmitting) return;
 		setIsSubmitting(true);
+		setError(false);
 
 		try {
 			const response = await fetch(process.env.NEXT_PUBLIC_BACKEND + "/login", {
@@ -50,147 +38,173 @@ export default function LoginPage() {
 
 			if (response.ok) {
 				const data = await response.json();
-				console.log("Login successful:", data);
-				// const token = data.token || Cookies.get("jwt");
 				const token = data.token;
 				if (!token) {
 					console.error("Token is missing or undefined");
 					return;
 				}
 				logins(String(token));
-				// (event.currentTarget as HTMLFormElement)?.reset();
 				router.push("/home");
-				// router.refresh();
 			} else {
-				setData(true);
-				return;
+				setError(true);
 			}
-		} catch (error) {
-			console.error("Error:", error);
+		} catch (err) {
+			console.error("Error:", err);
 		} finally {
-			setIsSubmitting(false); // Reset submitting state
+			setIsSubmitting(false);
 		}
 	};
-	// const google_login = process.env.NEXT_PUBLIC_BACKEND + `/google_login`;
-	// const github_login = process.env.NEXT_PUBLIC_BACKEND + `/github_login`;
 
 	return (
-		<>
-			<div className="flex flex-1 items-center justify-center bg-background">
-			<Card className="w-full max-w-[440px] border border-border bg-card shadow-[0_1px_3px_rgba(28,25,23,0.04),0_6px_16px_rgba(28,25,23,0.02)]">
-				<CardHeader className="flex flex-col gap-1">
-					<CardTitle className="font-sans text-2xl font-semibold text-center text-foreground">
-						Sign in to Senzen
-					</CardTitle>
-					<CardDescription className="text-center text-muted-foreground">
-						Welcome back — sign in to continue
-					</CardDescription>
-				</CardHeader>
-				<CardContent className="flex flex-col gap-4">
-					<div className="flex flex-col gap-2">
-						<a
-							href={process.env.NEXT_PUBLIC_BACKEND + "/google_login"}
-						>
-							<Button variant="outline" className="w-full border-border bg-card text-foreground hover:bg-secondary">
-								<svg
-									className="w-5 h-5 mr-2"
-									viewBox="0 0 21 20"
-									fill="none"
-									xmlns="http://www.w3.org/2000/svg"
-								>
+		<div className="flex flex-1 items-center justify-center bg-[#EEEEEE] relative">
+			{/* Paper grid canvas */}
+			<div
+				aria-hidden="true"
+				className="pointer-events-none absolute inset-0"
+				style={{
+					backgroundImage:
+						"linear-gradient(#E5E5E5 1px, transparent 1px), linear-gradient(90deg, #E5E5E5 1px, transparent 1px)",
+					backgroundSize: "4rem 4rem",
+					opacity: 0.5,
+				}}
+			/>
+
+			<div className="relative z-10 w-full max-w-[440px] mx-auto px-4">
+				{/* Bear cameo */}
+				<div className="flex justify-center -mb-2">
+					<img
+						src="/mascot/bear-mini-peeking.png"
+						alt=""
+						aria-hidden="true"
+						className="w-8 h-8 object-contain"
+					/>
+				</div>
+
+				{/* Auth card */}
+				<div className="bg-white border border-[#E2E2E2] rounded-2xl p-8 shadow-[0_1px_3px_rgba(10,10,10,0.04),0_8px_24px_rgba(10,10,10,0.03)]">
+					{/* Card header */}
+					<div className="text-center mb-6">
+						<h1 className="font-['Plus_Jakarta_Sans',-apple-system,sans-serif] text-2xl font-bold tracking-tight text-[#0A0A0A]">
+							sign in to senzen
+						</h1>
+						<p className="mt-1 text-sm text-[#555555]">
+							welcome back — enter your details below
+						</p>
+					</div>
+
+					{/* OAuth buttons */}
+					<div className="flex flex-col gap-2 mb-4">
+						<a href={process.env.NEXT_PUBLIC_BACKEND + "/google_login"}>
+							<button
+								type="button"
+								className="w-full flex items-center justify-center gap-2 border border-[#E5E5E5] bg-white text-[#0A0A0A] text-sm font-medium rounded-md px-4 py-2.5 hover:bg-[#F7F7F7] transition-colors duration-150"
+							>
+								<svg className="w-5 h-5" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<g clipPath="url(#clip0_13183_10121)">
-										<path
-											d="M20.3081 10.2303C20.3081 9.55056 20.253 8.86711 20.1354 8.19836H10.7031V12.0492H16.1046C15.8804 13.2911 15.1602 14.3898 14.1057 15.0879V17.5866H17.3282C19.2205 15.8449 20.3081 13.2728 20.3081 10.2303Z"
-											fill="#3F83F8"
-										></path>
-										<path
-											d="M10.7019 20.0006C13.3989 20.0006 15.6734 19.1151 17.3306 17.5865L14.1081 15.0879C13.2115 15.6979 12.0541 16.0433 10.7056 16.0433C8.09669 16.0433 5.88468 14.2832 5.091 11.9169H1.76562V14.4927C3.46322 17.8695 6.92087 20.0006 10.7019 20.0006V20.0006Z"
-											fill="#34A853"
-										></path>
-										<path
-											d="M5.08857 11.9169C4.66969 10.6749 4.66969 9.33008 5.08857 8.08811V5.51233H1.76688C0.348541 8.33798 0.348541 11.667 1.76688 14.4927L5.08857 11.9169V11.9169Z"
-											fill="#FBBC04"
-										></path>
-										<path
-											d="M10.7019 3.95805C12.1276 3.936 13.5055 4.47247 14.538 5.45722L17.393 2.60218C15.5852 0.904587 13.1858 -0.0287217 10.7019 0.000673888C6.92087 0.000673888 3.46322 2.13185 1.76562 5.51234L5.08732 8.08813C5.87733 5.71811 8.09302 3.95805 10.7019 3.95805V3.95805Z"
-											fill="#EA4335"
-										></path>
+										<path d="M20.3081 10.2303C20.3081 9.55056 20.253 8.86711 20.1354 8.19836H10.7031V12.0492H16.1046C15.8804 13.2911 15.1602 14.3898 14.1057 15.0879V17.5866H17.3282C19.2205 15.8449 20.3081 13.2728 20.3081 10.2303Z" fill="#3F83F8" />
+										<path d="M10.7019 20.0006C13.3989 20.0006 15.6734 19.1151 17.3306 17.5865L14.1081 15.0879C13.2115 15.6979 12.0541 16.0433 10.7056 16.0433C8.09669 16.0433 5.88468 14.2832 5.091 11.9169H1.76562V14.4927C3.46322 17.8695 6.92087 20.0006 10.7019 20.0006V20.0006Z" fill="#34A853" />
+										<path d="M5.08857 11.9169C4.66969 10.6749 4.66969 9.33008 5.08857 8.08811V5.51233H1.76688C0.348541 8.33798 0.348541 11.667 1.76688 14.4927L5.08857 11.9169V11.9169Z" fill="#FBBC04" />
+										<path d="M10.7019 3.95805C12.1276 3.936 13.5055 4.47247 14.538 5.45722L17.393 2.60218C15.5852 0.904587 13.1858 -0.0287217 10.7019 0.000673888C6.92087 0.000673888 3.46322 2.13185 1.76562 5.51234L5.08732 8.08813C5.87733 5.71811 8.09302 3.95805 10.7019 3.95805V3.95805Z" fill="#EA4335" />
 									</g>
 									<defs>
 										<clipPath id="clip0_13183_10121">
-											<rect
-												width="20"
-												height="20"
-												fill="white"
-												transform="translate(0.5)"
-											></rect>
+											<rect width="20" height="20" fill="white" transform="translate(0.5)" />
 										</clipPath>
 									</defs>
 								</svg>
 								Continue with Google
-							</Button>
+							</button>
 						</a>
 
-						<a
-							href={process.env.NEXT_PUBLIC_BACKEND + "/github_login"}
-						>
-							<Button variant="outline" className="w-full border-border bg-card text-foreground hover:bg-secondary">
-								<Github className="w-5 h-5 mr-2" />
+						<a href={process.env.NEXT_PUBLIC_BACKEND + "/github_login"}>
+							<button
+								type="button"
+								className="w-full flex items-center justify-center gap-2 border border-[#E5E5E5] bg-white text-[#0A0A0A] text-sm font-medium rounded-md px-4 py-2.5 hover:bg-[#F7F7F7] transition-colors duration-150"
+							>
+								<Github className="w-5 h-5" />
 								Continue with GitHub
-							</Button>
+							</button>
 						</a>
 					</div>
-					<div className="flex items-center flex-col">
-						<Separator className="flex-grow" />
-						<span className="mx-4 text-sm text-muted-foreground py-2">or</span>
-						<Separator className="flex-grow" />
+
+					{/* Divider */}
+					<div className="relative my-5">
+						<div className="absolute inset-0 flex items-center">
+							<div className="w-full border-t border-[#E5E5E5]" />
+						</div>
+						<div className="relative flex justify-center text-xs">
+							<span className="bg-white px-3 font-mono text-[12px] text-[#888888]">
+								or
+							</span>
+						</div>
 					</div>
-					<form onSubmit={handleSubmitLogin}>
-						<div className="flex flex-col gap-2">
-							<Label htmlFor="email">Email</Label>
-							<Input
+
+					{/* Email/password form */}
+					<form onSubmit={handleSubmitLogin} className="flex flex-col gap-3">
+						<div className="flex flex-col gap-1.5">
+							<label
+								htmlFor="email"
+								className="font-['Plus_Jakarta_Sans',-apple-system,sans-serif] text-[13px] font-semibold text-[#0A0A0A] tracking-tight"
+							>
+								email
+							</label>
+							<input
 								id="email"
 								type="email"
-								placeholder="example@example.com"
+								placeholder="you@example.com"
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
 								required
+								className="w-full bg-white border border-[#E5E5E5] rounded-md px-3.5 py-2.5 text-sm text-[#0A0A0A] placeholder:text-[#888888] focus:outline-none focus:ring-2 focus:ring-[#1EC072] focus:ring-offset-2 transition-colors duration-150"
 							/>
 						</div>
-						<div className="flex flex-col gap-2 mt-2">
-							<Label htmlFor="password">Password</Label>
-							<Input
+
+						<div className="flex flex-col gap-1.5">
+							<label
+								htmlFor="password"
+								className="font-['Plus_Jakarta_Sans',-apple-system,sans-serif] text-[13px] font-semibold text-[#0A0A0A] tracking-tight"
+							>
+								password
+							</label>
+							<input
 								id="password"
 								type="password"
 								placeholder="••••••••"
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
 								required
+								className="w-full bg-white border border-[#E5E5E5] rounded-md px-3.5 py-2.5 text-sm text-[#0A0A0A] placeholder:text-[#888888] focus:outline-none focus:ring-2 focus:ring-[#1EC072] focus:ring-offset-2 transition-colors duration-150"
 							/>
 						</div>
 
-						<Button className="w-full mt-4 bg-[#101516] hover:bg-[#101516]/90 text-white font-sans font-semibold focus-visible:ring-2 focus-visible:ring-[#1EC072] focus-visible:ring-offset-2" type="submit">
-							Sign In
-						</Button>
+						<button
+							type="submit"
+							disabled={isSubmitting}
+							className="mt-2 w-full bg-[#0A0A0A] text-white font-semibold text-sm rounded-full px-5 py-2.5 hover:bg-[#262626] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#1EC072] focus-visible:ring-offset-2 transition-all duration-150 disabled:opacity-85 disabled:cursor-not-allowed"
+						>
+							{isSubmitting ? "signing in..." : "sign in"}
+						</button>
 					</form>
 
-					{data && (
-						<p className="text-sm text-destructive">
-							check your email and password again
-						</p>
+					{/* Error state */}
+					{error && (
+						<div className="mt-4 bg-[#FEF2F2] text-[#DC2626] border border-[#FCA5A5] rounded-md px-3 py-2.5 font-mono text-xs">
+							invalid email or password. please try again.
+						</div>
 					)}
-				</CardContent>
-				<CardFooter className="flex flex-col">
-					<p className="mt-2 text-xs text-center text-muted-foreground">
-						Don&apos;t have an account?{" "}
-						<Link href="/sign-up" className="text-primary hover:underline">
-							Sign up
+
+					{/* Footer link */}
+					<p className="mt-5 text-center text-[13px] text-[#555555]">
+						new here?{" "}
+						<Link
+							href="/sign-up"
+							className="text-[#0A0A0A] font-semibold underline underline-offset-4 hover:text-[#1EC072] transition-colors duration-150"
+						>
+							create an account
 						</Link>
 					</p>
-				</CardFooter>
-			</Card>
+				</div>
 			</div>
-			<Footer />
-		</>
+		</div>
 	);
 }
