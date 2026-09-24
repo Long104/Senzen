@@ -1,38 +1,28 @@
 import React from "react";
 
-const DottedHighlight = ({ color = "#8B5CF6", className = "" }: { color: string; className?: string }) => {
-  return (
-    <span aria-hidden="true" className={`absolute z-0 block ${className}`} style={{
-      backgroundColor: color,
-      backgroundImage: "radial-gradient(circle, rgba(10,10,10,0.12) 2.5px, transparent 2.5px)",
-      backgroundSize: "14px 14px",
-    }} />
-  );
-};
-
 const highlights = [
 	{
 		number: "01",
-		title: "Plans for real life",
-		body: "Name it, set a budget, pick a duration.",
+		title: "custom duration plans",
+		body: "Set a 1-month or 6-month plan. You decide the timeline.",
 		span: "md:col-span-3",
 	},
 	{
 		number: "02",
-		title: "Budgets by category",
-		body: "Groceries, Transport, Eating out — your call.",
+		title: "category envelopes",
+		body: "Groceries, transport, dining out — each bucket with a ceiling you set.",
 		span: "md:col-span-2",
 	},
 	{
 		number: "03",
-		title: "Daily ledger",
-		body: "Log expenses as you go. Every entry counts.",
+		title: "intentional manual entry",
+		body: "Type an amount, press enter. No bank connection, no automated import.",
 		span: "md:col-span-2",
 	},
 	{
 		number: "04",
-		title: "Progress you can see",
-		body: "$1,200 / $1,500 · on track. Stay motivated.",
+		title: "clear progress without noise",
+		body: "Progress bars show where you are. No guilt trips, no push alerts.",
 		span: "md:col-span-3",
 	},
 ];
@@ -48,15 +38,23 @@ export function HighlightsBand() {
 	return (
 		<section className="relative w-full overflow-hidden bg-[#EEEEEE]">
 			<div className="max-w-7xl mx-auto px-6 md:px-10 py-16 md:py-24">
-				<p className="font-mono text-xs uppercase tracking-wider text-[#555555]">
-					MORE FROM SENZEN
+				<p className="font-mono text-sm text-[#555555]">
+					more from senzen
 				</p>
 				<div className="mt-10 grid grid-cols-1 md:grid-cols-5 md:gap-x-12">
 					{highlights.map((item, i) => (
-						<div key={item.number} className={`py-8 md:py-10 ${item.span} ${rowBorders[i]}`}>
+						<div
+							key={item.number}
+							className={`py-8 md:py-10 ${item.span} ${rowBorders[i]}`}
+						>
 							<div className="flex items-center gap-3">
-								<span className="font-mono text-sm text-[#555555]">{item.number}</span>
-								<DottedHighlight color="#8B5CF6" />
+								<span className="font-mono text-sm text-[#555555]">
+									{item.number}
+								</span>
+								<span
+									aria-hidden="true"
+									className="h-2 w-2 rounded-full bg-[#1EC072] shrink-0"
+								/>
 								<h3 className="font-sans text-lg md:text-xl font-semibold tracking-tight text-[#0A0A0A]">
 									{item.title}
 								</h3>

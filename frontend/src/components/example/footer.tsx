@@ -1,77 +1,52 @@
 import React from "react";
 import Link from "next/link";
 
-const columns = [
-	{
-		title: "Product",
-		links: [
-			{ label: "Create Plan", href: "/createPlan" },
-			{ label: "Dashboard", href: "/home" },
-			{ label: "Pricing", href: "/pricing" },
-		],
-	},
-	{
-		title: "Company",
-		links: [
-			{ label: "About", href: "#" },
-			{ label: "Careers", href: "#" },
-			{ label: "Contact", href: "#" },
-		],
-	},
-	{
-		title: "Legal",
-		links: [
-			{ label: "Privacy", href: "#" },
-			{ label: "Terms", href: "#" },
-			{ label: "Security", href: "#" },
-		],
-	},
-];
-
 export const Footer = () => {
 	return (
 		<footer className="w-full bg-[#0A0A0A] text-[#EEEEEE]">
 			<div
 				aria-hidden="true"
-				className="h-8 w-full"
+				className="h-6 w-full"
 				style={{
 					backgroundImage:
-						"radial-gradient(circle, rgba(238,238,238,0.18) 2.5px, transparent 2.5px)",
+						"radial-gradient(circle, rgba(238,238,238,0.18) 2px, transparent 2px)",
 					backgroundSize: "14px 14px",
 				}}
 			/>
-			<div className="max-w-7xl mx-auto px-6 md:px-10 py-12 md:py-16">
-				<div className="grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-12">
-					<div>
-						<p className="font-mono text-xl font-bold tracking-tight text-[#EEEEEE]">
-							SENZEN
-						</p>
-						<p className="mt-4 font-sans text-sm leading-relaxed text-[#BBBBBB] max-w-xs">
-							Plans, budgets, and a daily ledger — progress you can see.
-						</p>
-					</div>
-					{columns.map((column) => (
-						<div key={column.title}>
-							<h4 className="font-sans text-sm font-semibold text-[#EEEEEE]">
-								{column.title}
-							</h4>
-							<ul className="mt-4 space-y-2 font-sans text-sm">
-								{column.links.map((link) => (
-									<li key={link.label}>
-										<Link
-											href={link.href}
-											className="text-[#BBBBBB] hover:text-[#EEEEEE] transition-colors"
-										>
-											{link.label}
-										</Link>
-									</li>
-								))}
-							</ul>
-						</div>
-					))}
+			<div className="max-w-7xl mx-auto flex items-center justify-between py-8 px-6 md:px-10">
+				{/* Left: bear + brand + tagline */}
+				<div className="flex items-center gap-2.5">
+					<img
+						src="/mascot/bear-sleep-peaceful.png"
+						alt=""
+						aria-hidden="true"
+						className="w-6 h-6 object-contain opacity-85"
+					/>
+					<span className="font-sans text-sm font-bold text-[#EEEEEE]">
+						senzen
+					</span>
+					<span className="font-sans text-[13px] text-[#888888]">
+						· your money, remembered.
+					</span>
 				</div>
-				<div className="mt-12 border-t border-white/10 pt-6 font-sans text-xs text-[#999999]">
-					© {new Date().getFullYear()} Senzen Financial Systems. All rights reserved.
+
+				{/* Right: nav links + copyright */}
+				<div className="flex items-center gap-5">
+					<Link
+						href="/sign-in"
+						className="text-xs text-[#AAAAAA] hover:text-[#EEEEEE] transition-colors"
+					>
+						sign in
+					</Link>
+					<Link
+						href="/sign-up"
+						className="text-xs text-[#AAAAAA] hover:text-[#EEEEEE] transition-colors"
+					>
+						sign up
+					</Link>
+					<span className="text-xs text-[#666666]">
+						© {new Date().getFullYear()} senzen. all rights reserved.
+					</span>
 				</div>
 			</div>
 		</footer>
