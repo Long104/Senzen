@@ -96,7 +96,7 @@ export function QuickAdd({ planId }: { planId?: number }) {
 							type="button"
 							aria-label="change currency"
 							title={`change currency · ${code}`}
-							className="flex shrink-0 items-center gap-1.5 rounded-full py-1 pr-2 font-mono text-lg text-primary select-none transition-colors hover:bg-primary/5 hover:opacity-80"
+							className="flex shrink-0 items-center gap-1.5 rounded-full py-1 pr-2 font-mono text-lg text-primary select-none transition-colors outline-none hover:bg-primary/5 hover:opacity-80 focus:outline-none focus-visible:outline-none"
 						>
 							{symbol}
 							<ChevronDown className="h-3 w-3 opacity-60" strokeWidth={2} />
