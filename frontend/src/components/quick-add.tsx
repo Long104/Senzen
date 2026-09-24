@@ -14,6 +14,16 @@ import { useCreateTransaction } from "@/hooks/useTransactions";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
+function cleanAmountInput(raw: string): string {
+	const stripped = raw.replace(/[^0-9.]/g, "");
+	const firstDot = stripped.indexOf(".");
+	if (firstDot === -1) return stripped;
+	return (
+		stripped.slice(0, firstDot + 1) +
+		stripped.slice(firstDot + 1).replace(/\./g, "")
+	);
+}
+
 export function QuickAdd({ planId }: { planId?: number }) {
 	const [amount, setAmount] = useState("");
 	const [category, setCategory] = useState<string | null>(null);
@@ -25,6 +35,8 @@ export function QuickAdd({ planId }: { planId?: number }) {
 	const { toast } = useToast();
 	const { code, symbol } = useCurrency();
 
+	const parsed = parseFloat(amount);
+	const hasAmount = !isNaN(parsed) && parsed > 0;
 	const active = amount.trim().length > 0;
 	const allCategories = [...BUILT_IN_CATEGORIES.map((c) => c.key), ...customs];
 
@@ -35,15 +47,17 @@ export function QuickAdd({ planId }: { planId?: number }) {
 	}
 
 	function submit() {
-		const value = parseFloat(amount);
-		if (!active || isNaN(value) || value <= 0) return;
+		if (!active || isNaN(parsed) || parsed <= 0) {
+			toast({ title: "type a number please" });
+			return;
+		}
 		if (!category) {
 			toast({ title: "pick a category first" });
 			return;
 		}
 		createTransactionMutation.mutate(
 			{
-				amount: value,
+				amount: parsed,
 				category_name: category,
 				description: note.trim() || undefined,
 				plan_id: planId ?? null,
@@ -75,60 +89,66 @@ export function QuickAdd({ planId }: { planId?: number }) {
 
 	return (
 		<div className="w-full">
-			<div className="flex items-center gap-2 rounded-lg border border-border bg-card px-4 h-14">
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<button
-							type="button"
-							aria-label="change currency"
-							title={code}
-							className="font-mono text-lg text-primary select-none hover:text-primary/80"
-						>
-							{symbol}
-						</button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent align="start">
-						{CURRENCIES.map((c) => (
-							<DropdownMenuItem
-								key={c.code}
-								onClick={() => setCurrency(c.code)}
-								className={c.code === code ? "text-primary" : ""}
+			<div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
+				<div className="flex items-center gap-2 rounded-lg border border-border bg-card px-4 h-14 sm:w-44 shrink-0 focus-within:border-primary/50 transition-colors">
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<button
+								type="button"
+								aria-label="change currency"
+								title={code}
+								className="font-mono text-lg text-primary select-none hover:text-primary/80"
 							>
-								<span className="w-6 font-mono">{c.symbol}</span> {c.code}
-							</DropdownMenuItem>
-						))}
-					</DropdownMenuContent>
-				</DropdownMenu>
-				<input
-					value={amount}
-					onChange={(e) => {
-						setAmount(e.target.value.replace(/[^0-9.]/g, ""));
-						ensureCustoms();
-					}}
-					inputMode="decimal"
-					placeholder={active ? "" : "type an amount"}
-					aria-label="amount"
-					className="min-w-0 flex-1 bg-transparent outline-none font-mono text-lg tabular-nums placeholder:text-muted-foreground/70"
-				/>
-				{active && (
+								{symbol}
+							</button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="start">
+							{CURRENCIES.map((c) => (
+								<DropdownMenuItem
+									key={c.code}
+									onClick={() => setCurrency(c.code)}
+									className={c.code === code ? "text-primary" : ""}
+								>
+									<span className="w-6 font-mono">{c.symbol}</span> {c.code}
+								</DropdownMenuItem>
+							))}
+						</DropdownMenuContent>
+					</DropdownMenu>
+					<input
+						value={amount}
+						onChange={(e) => {
+							setAmount(cleanAmountInput(e.target.value));
+							ensureCustoms();
+						}}
+						inputMode="decimal"
+						placeholder="0.00"
+						aria-label="amount"
+						className="min-w-0 w-full bg-transparent outline-none font-mono text-lg tabular-nums placeholder:text-muted-foreground/70"
+					/>
+				</div>
+
+				<div className="flex items-center rounded-lg border border-border bg-card px-4 h-14 flex-1 focus-within:border-primary/50 transition-colors">
 					<input
 						value={note}
 						onChange={(e) => setNote(e.target.value)}
-						placeholder="add a note"
+						placeholder="what was it for? — e.g. lunch with friends"
 						aria-label="note"
-						className="hidden sm:block w-40 bg-transparent outline-none text-sm text-foreground placeholder:text-muted-foreground/70"
+						className="w-full bg-transparent outline-none text-sm text-foreground placeholder:text-muted-foreground/70"
 					/>
-				)}
-				{active && (
-					<button
-						type="button"
-						onClick={submit}
-						disabled={createTransactionMutation.isPending}
-						className="shrink-0 rounded-md bg-primary px-4 h-8 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
-					>
-						add
-					</button>
-				)}
+				</div>
+
+				<button
+					type="button"
+					onClick={submit}
+					disabled={createTransactionMutation.isPending}
+					aria-label="add expense"
+					className={cn(
+						"h-14 w-full sm:w-14 shrink-0 rounded-full bg-primary text-primary-foreground transition-all hover:bg-primary/90 hover:scale-105 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2",
+					)}
+				>
+					<Plus className={cn("h-5 w-5 transition-transform", hasAmount && category && "rotate-90")} />
+					<span className="sm:hidden text-sm font-medium">add</span>
+				</button>
 			</div>
 
 			<div
@@ -147,9 +167,9 @@ export function QuickAdd({ planId }: { planId?: number }) {
 							type="button"
 							onClick={() => setCategory(key)}
 							className={cn(
-								"flex flex-col items-center gap-1.5 rounded-lg border bg-card px-2 py-2.5 transition-colors",
+								"flex flex-col items-center gap-1.5 rounded-lg border bg-card px-2 py-2.5 transition-all duration-200 hover:-translate-y-0.5",
 								selected
-									? "border-primary bg-primary/10"
+									? "border-primary bg-primary/10 scale-[1.03]"
 									: "border-border hover:border-primary/50",
 							)}
 						>
@@ -175,7 +195,7 @@ export function QuickAdd({ planId }: { planId?: number }) {
 						ensureCustoms();
 						setAddingCustom(true);
 					}}
-					className="flex flex-col items-center gap-1.5 rounded-lg border border-dashed border-border bg-card px-2 py-2.5 transition-colors hover:border-primary/50"
+					className="flex flex-col items-center gap-1.5 rounded-lg border border-dashed border-border bg-card px-2 py-2.5 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/50"
 					aria-label="new category"
 				>
 					<Plus className="h-4 w-4 text-muted-foreground" strokeWidth={1.5} />

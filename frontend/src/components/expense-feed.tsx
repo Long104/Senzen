@@ -6,6 +6,16 @@ import type { Transaction } from "@/hooks/useTransactions";
 import { useDeleteTransaction } from "@/hooks/useTransactions";
 import { categoryMeta } from "@/lib/categories";
 import { useCurrency } from "@/lib/currency";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 function dayLabel(dateStr: string): string {
 	const date = new Date(dateStr);
@@ -26,7 +36,7 @@ function dayLabel(dateStr: string): string {
 	});
 }
 
-function FeedRow({ t, onDelete, symbol }: { t: Transaction; onDelete: (id: number) => void; symbol: string }) {
+function FeedRow({ t, onDelete, symbol }: { t: Transaction; onDelete: (t: Transaction) => void; symbol: string }) {
 	const meta = categoryMeta(t.category_name || t.category?.name);
 	return (
 		<div className="group flex items-center gap-3 py-2.5">
@@ -48,7 +58,7 @@ function FeedRow({ t, onDelete, symbol }: { t: Transaction; onDelete: (id: numbe
 			</span>
 			<button
 				type="button"
-				onClick={() => onDelete(t.id)}
+				onClick={() => onDelete(t)}
 				aria-label="delete expense"
 				className="shrink-0 rounded-md p-1 text-muted-foreground opacity-0 transition-all hover:text-destructive focus-visible:opacity-100 group-hover:opacity-100"
 			>
@@ -65,6 +75,7 @@ export function ExpenseFeed({
 }) {
 	const { deleteTransactionMutation } = useDeleteTransaction();
 	const [deletingId, setDeletingId] = useState<number | null>(null);
+	const [confirmTx, setConfirmTx] = useState<Transaction | null>(null);
 	const { symbol } = useCurrency();
 
 	function handleDelete(id: number) {
@@ -103,12 +114,40 @@ export function ExpenseFeed({
 								key={t.id}
 								className={deletingId === t.id ? "opacity-40 transition-opacity" : "transition-opacity"}
 							>
-								<FeedRow t={t} onDelete={handleDelete} symbol={symbol} />
+								<FeedRow t={t} onDelete={setConfirmTx} symbol={symbol} />
 							</div>
 						))}
 					</div>
 				</section>
 			))}
+
+			<AlertDialog
+				open={!!confirmTx}
+				onOpenChange={(open) => !open && setConfirmTx(null)}
+			>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>delete this expense?</AlertDialogTitle>
+						<AlertDialogDescription>
+							{confirmTx
+								? `${confirmTx.description || categoryMeta(confirmTx.category_name || confirmTx.category?.name).label} · ${symbol}${confirmTx.amount.toFixed(2)} — this can't be undone.`
+								: ""}
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>cancel</AlertDialogCancel>
+						<AlertDialogAction
+							className="bg-destructive text-white hover:bg-destructive/90"
+							onClick={() => {
+								if (confirmTx) handleDelete(confirmTx.id);
+								setConfirmTx(null);
+							}}
+						>
+							delete
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</div>
 	);
 }
