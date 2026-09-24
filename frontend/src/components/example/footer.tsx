@@ -43,11 +43,18 @@ export const Footer = () => {
 			<div className="max-w-7xl mx-auto px-6 md:px-10 py-12 md:py-16">
 				<div className="grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-12">
 					<div>
-						<p className="font-mono text-xl font-bold tracking-tight text-[#EEEEEE]">
-							SENZEN
+						{/* Bear stamp */}
+						<img
+							src="/mascot/bear-sleep-peaceful.png"
+							alt=""
+							aria-hidden="true"
+							className="w-16 h-16 object-contain mb-4 opacity-80"
+						/>
+						<p className="font-sans text-xl font-bold tracking-tight text-[#EEEEEE]">
+							senzen
 						</p>
-						<p className="mt-4 font-sans text-sm leading-relaxed text-[#BBBBBB] max-w-xs">
-							Plans, budgets, and a daily ledger — progress you can see.
+						<p className="mt-3 font-sans text-sm leading-relaxed text-[#BBBBBB] max-w-xs">
+							your money, remembered.
 						</p>
 					</div>
 					{columns.map((column) => (
@@ -71,7 +78,8 @@ export const Footer = () => {
 					))}
 				</div>
 				<div className="mt-12 border-t border-white/10 pt-6 font-sans text-xs text-[#999999]">
-					© {new Date().getFullYear()} Senzen Financial Systems. All rights reserved.
+					© {new Date().getFullYear()} senzen financial systems. all rights
+					reserved.
 				</div>
 			</div>
 		</footer>

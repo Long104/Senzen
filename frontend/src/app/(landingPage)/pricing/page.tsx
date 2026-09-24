@@ -42,7 +42,7 @@ const plans = [
 		features: [
 			"Unlimited financial plans",
 			"Advanced analytics & charts",
-			"Auto-save & smart alerts",
+			"Multi-currency & CSV export",
 			"Custom categories & budgets",
 			"Export reports (PDF/CSV)",
 			"Priority support",

@@ -11,7 +11,7 @@ export function Navbar() {
 					href="/#plans"
 					className="group inline-flex items-center gap-1.5 hover:text-neutral-200 transition-colors"
 				>
-					<span>★ Meet Senzen: Plan your money. Track every day.</span>
+					<span>senzen · manual expense tracking · no bank sync · no notifications</span>
 					<ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
 				</Link>
 			</div>
