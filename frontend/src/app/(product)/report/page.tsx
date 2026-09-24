@@ -20,7 +20,7 @@ import { useCurrency } from "@/lib/currency";
 import { ExportCsv } from "@/components/export-csv";
 
 type Plan = z.infer<typeof PlanSchema>;
-type Mode = "month" | "year" | "all";
+type Mode = "month" | "year" | "all" | "recurring";
 
 const chartConfig = {
 	spent: { label: "spent", color: "hsl(var(--chart-1))" },
@@ -46,11 +46,57 @@ export default function ReportPage() {
 
 	const now = new Date();
 	const viewDate = useMemo(() => {
-		if (mode === "all") return now;
+		if (mode === "all" || mode === "recurring") return now;
 		const d = new Date();
 		d.setMonth(d.getMonth() + offset);
 		return d;
 	}, [mode, offset]);
+
+	// Honest recurring detection: categories logged in 2+ consecutive months,
+	// with the streak still alive (this month or last). A fact, not a guess.
+	const recurring = useMemo(() => {
+		const byCat = new Map<string, Map<string, number>>();
+		for (const t of transactions) {
+			const key = t.category_name || t.category?.name || "other";
+			const d = new Date(t.transaction_date);
+			const mk = `${d.getFullYear()}-${String(d.getMonth()).padStart(2, "0")}`;
+			const months = byCat.get(key) ?? new Map<string, number>();
+			months.set(mk, (months.get(mk) ?? 0) + t.amount);
+			byCat.set(key, months);
+		}
+
+		const nowIdx = new Date().getFullYear() * 12 + new Date().getMonth();
+		const keyOf = (i: number) =>
+			`${Math.floor(i / 12)}-${String(i % 12).padStart(2, "0")}`;
+
+		const rows: { key: string; streak: number; recent: number[]; avg: number }[] = [];
+		for (const [key, months] of byCat) {
+			const idx = new Set(
+				[...months.keys()].map((mk) => {
+					const [y, m] = mk.split("-").map(Number);
+					return y * 12 + m;
+				}),
+			);
+
+			let start = nowIdx;
+			if (!idx.has(start) && idx.has(start - 1)) start -= 1;
+			if (!idx.has(start)) continue;
+
+			let streak = 0;
+			for (let i = start; idx.has(i); i--) streak++;
+			if (streak < 2) continue;
+
+			const recent: number[] = [];
+			for (let i = start; i > start - 3 && idx.has(i); i--) {
+				recent.push(months.get(keyOf(i)) ?? 0);
+			}
+			const totals = [...months.values()];
+			const avg = totals.reduce((a, b) => a + b, 0) / totals.length;
+			rows.push({ key, streak, recent, avg });
+		}
+
+		return rows.sort((a, b) => b.streak - a.streak || b.avg - a.avg);
+	}, [transactions]);
 
 	const view = useMemo(() => {
 		const inWindow = transactions.filter((t) => {
@@ -135,12 +181,92 @@ export default function ReportPage() {
 	}, [transactions, viewDate, mode]);
 
 	const title =
-		mode === "month"
-			? viewDate.toLocaleDateString("en-US", { month: "long" }).toLowerCase() +
-				(viewDate.getFullYear() !== now.getFullYear() ? ` ${viewDate.getFullYear()}` : "")
-			: mode === "year"
-				? String(viewDate.getFullYear())
-				: "all time";
+		mode === "recurring"
+			? "recurring"
+			: mode === "month"
+				? viewDate.toLocaleDateString("en-US", { month: "long" }).toLowerCase() +
+					(viewDate.getFullYear() !== now.getFullYear() ? ` ${viewDate.getFullYear()}` : "")
+				: mode === "year"
+					? String(viewDate.getFullYear())
+					: "all time";
+
+	const modeToggle = (
+		<div className="flex items-center gap-2">
+			<ExportCsv />
+			<div className="flex rounded-lg border border-border bg-card p-0.5">
+				{(["month", "year", "all", "recurring"] as Mode[]).map((m) => (
+					<button
+						key={m}
+						type="button"
+						onClick={() => {
+							setMode(m);
+							setExpandedCategory(null);
+							setOffset(0);
+						}}
+						className={cn(
+							"rounded-md px-3 py-1 text-sm lowercase transition-colors",
+							mode === m
+								? "bg-primary/10 text-primary"
+								: "text-muted-foreground hover:text-foreground",
+						)}
+					>
+						{m}
+					</button>
+				))}
+			</div>
+		</div>
+	);
+
+	if (mode === "recurring") {
+		return (
+			<main className="mx-auto max-w-2xl px-6 py-10">
+				<div className="flex flex-wrap items-center justify-between gap-4">
+					<h1 className="text-2xl font-semibold lowercase tracking-tight text-foreground">
+						recurring
+					</h1>
+					{modeToggle}
+				</div>
+				<p className="mt-2 text-sm text-muted-foreground">
+					what shows up every month — a fact, not a warning
+				</p>
+
+				{recurring.length === 0 ? (
+					<p className="py-16 text-center text-sm text-muted-foreground">
+						nothing repeats yet — log a category two months in a row and it
+						shows up here
+					</p>
+				) : (
+					<div className="mt-8 divide-y divide-border/60">
+						{recurring.map(({ key, streak, recent, avg }) => {
+							const meta = categoryMeta(key);
+							return (
+								<div key={key} className="flex items-center gap-3 py-3.5">
+									<meta.icon
+										className="h-4 w-4 shrink-0 text-muted-foreground"
+										strokeWidth={1.5}
+									/>
+									<div className="min-w-0">
+										<p className="truncate text-sm text-foreground">
+											{meta.label}
+										</p>
+										<p className="mt-0.5 text-xs text-muted-foreground">
+											{streak} months running
+											{recent.length > 1 &&
+												` · ${recent.map((r) => `${symbol}${r.toFixed(0)}`).join(" · ")}`}
+										</p>
+									</div>
+									<span className="flex-1" />
+									<span className="shrink-0 font-mono text-sm tabular-nums text-primary">
+										~{symbol}{avg.toFixed(0)}/mo
+									</span>
+								</div>
+							);
+						})}
+					</div>
+				)}
+			</main>
+		);
+	}
 
 	const prevLabel =
 		mode === "month"
@@ -205,30 +331,7 @@ export default function ReportPage() {
 						</button>
 					)}
 				</div>
-				<div className="flex items-center gap-2">
-					<ExportCsv />
-					<div className="flex rounded-lg border border-border bg-card p-0.5">
-						{(["month", "year", "all"] as Mode[]).map((m) => (
-							<button
-								key={m}
-								type="button"
-								onClick={() => {
-									setMode(m);
-									setExpandedCategory(null);
-									setOffset(0);
-								}}
-								className={cn(
-									"rounded-md px-3 py-1 text-sm lowercase transition-colors",
-									mode === m
-										? "bg-primary/10 text-primary"
-										: "text-muted-foreground hover:text-foreground",
-								)}
-							>
-								{m}
-							</button>
-						))}
-					</div>
-				</div>
+				{modeToggle}
 			</div>
 
 			<p className="mt-4 font-mono text-3xl font-semibold tracking-tight tabular-nums text-foreground">
