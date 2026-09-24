@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ChevronDown, Plus } from "lucide-react";
-import { addCustomCategory } from "@/lib/categories";
+import { addCustomCategory, CUSTOM_ICONS } from "@/lib/categories";
 import { CURRENCIES, setCurrency, useCurrency } from "@/lib/currency";
 import {
 	DropdownMenu,
@@ -22,6 +22,7 @@ export function QuickAdd({ planId }: { planId?: number }) {
 	const [note, setNote] = useState("");
 	const [addingCustom, setAddingCustom] = useState(false);
 	const [customName, setCustomName] = useState("");
+	const [customIcon, setCustomIcon] = useState<string>("coffee");
 	const { createTransactionMutation } = useCreateTransaction();
 	const { toast } = useToast();
 	const { code, symbol } = useCurrency();
@@ -62,11 +63,12 @@ export function QuickAdd({ planId }: { planId?: number }) {
 
 	function saveCustom(e: React.FormEvent) {
 		e.preventDefault();
-		const key = addCustomCategory(customName);
+		const key = addCustomCategory(customName, customIcon);
 		if (key) {
 			setCategory(key);
 		}
 		setCustomName("");
+		setCustomIcon("coffee");
 		setAddingCustom(false);
 	}
 
@@ -140,7 +142,7 @@ export function QuickAdd({ planId }: { planId?: number }) {
 				<button
 					type="button"
 					onClick={() => setAddingCustom(true)}
-					className="flex flex-col items-center gap-1.5 rounded-lg border border-dashed border-border bg-card px-2 py-2.5 transition-colors duration-200 hover:border-primary/50"
+					className="flex flex-col items-center gap-1.5 rounded-full border border-dashed border-border bg-card px-3 py-2.5 transition-colors duration-200 hover:border-primary/50"
 					aria-label="new category"
 				>
 					<Plus className="h-4 w-4 text-muted-foreground" strokeWidth={1.5} />
@@ -149,28 +151,51 @@ export function QuickAdd({ planId }: { planId?: number }) {
 			</div>
 
 			{addingCustom && (
-				<form onSubmit={saveCustom} className="mt-2 flex gap-2">
+				<form onSubmit={saveCustom} className="mt-3 rounded-2xl border border-border bg-card p-3">
 					<input
 						value={customName}
 						onChange={(e) => setCustomName(e.target.value)}
 						placeholder="category name, e.g. coffee"
 						autoFocus
 						aria-label="new category name"
-						className="flex-1 rounded-md border border-border bg-card px-3 h-9 text-sm outline-none placeholder:text-muted-foreground/70 focus:border-primary/50"
+						className="w-full rounded-md border border-border bg-card px-3 h-9 text-sm outline-none placeholder:text-muted-foreground/70 focus:border-primary/50"
 					/>
-					<button
-						type="submit"
-						className="rounded-md bg-primary px-4 h-9 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-					>
-						save
-					</button>
-					<button
-						type="button"
-						onClick={() => setAddingCustom(false)}
-						className="rounded-md border border-border px-3 h-9 text-sm text-muted-foreground hover:text-foreground"
-					>
-						cancel
-					</button>
+					<div className="mt-3 grid grid-cols-8 gap-1.5">
+						{Object.entries(CUSTOM_ICONS).map(([key, Icon]) => {
+							const picked = customIcon === key;
+							return (
+								<button
+									key={key}
+									type="button"
+									onClick={() => setCustomIcon(key)}
+									aria-label={key}
+									className={cn(
+										"flex h-9 items-center justify-center rounded-full border transition-colors duration-200",
+										picked
+											? "border-primary bg-primary/10 text-primary"
+											: "border-transparent text-muted-foreground hover:border-border",
+									)}
+								>
+									<Icon className="h-4 w-4" strokeWidth={1.5} />
+								</button>
+							);
+						})}
+					</div>
+					<div className="mt-3 flex gap-2">
+						<button
+							type="submit"
+							className="rounded-md bg-primary px-4 h-9 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+						>
+							save
+						</button>
+						<button
+							type="button"
+							onClick={() => setAddingCustom(false)}
+							className="rounded-md border border-border px-3 h-9 text-sm text-muted-foreground hover:text-foreground"
+						>
+							cancel
+						</button>
+					</div>
 				</form>
 			)}
 		</div>

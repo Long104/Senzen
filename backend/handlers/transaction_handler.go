@@ -52,8 +52,15 @@ func ExportUserTransactions(c *fiber.Ctx) error {
 	}
 
 	var transactions []models.Transaction
-	if err := config.DB.
-		Where("user_id = ?", userID).
+	q := config.DB.Where("user_id = ?", userID)
+	if planIDStr := c.Query("plan_id"); planIDStr != "" {
+		planID, err := strconv.ParseInt(planIDStr, 10, 64)
+		if err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid plan_id"})
+		}
+		q = q.Where("plan_id = ?", planID)
+	}
+	if err := q.
 		Order("transaction_date DESC").
 		Find(&transactions).Error; err != nil {
 		log.Println("Error exporting transactions:", err)

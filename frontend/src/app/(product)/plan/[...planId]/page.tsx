@@ -6,6 +6,7 @@ import { ExpenseFeed } from "@/components/expense-feed";
 import { usePlanById } from "@/hooks/usePlan";
 import { useTransactions } from "@/hooks/useTransactions";
 import { useCurrency } from "@/lib/currency";
+import { ExportCsv } from "@/components/export-csv";
 
 function inMonth(date: string, ref: Date) {
 	const d = new Date(date);
@@ -48,17 +49,22 @@ export default function PlanPage() {
 
 	return (
 		<main className="mx-auto max-w-2xl px-6 py-10">
-			<h1 className="text-2xl font-semibold lowercase tracking-tight text-foreground">
-				{plan?.name ?? "plan"}
-			</h1>
-			{budget > 0 && (
-				<p className="mt-2 font-mono text-lg tabular-nums text-foreground">
-					{symbol}{left.toFixed(2)}{" "}
-					<span className="font-sans text-sm text-muted-foreground">
-						left of {symbol}{budget.toLocaleString()}
-					</span>
-				</p>
-			)}
+			<div className="flex items-start justify-between gap-4">
+				<div>
+					<h1 className="text-2xl font-semibold lowercase tracking-tight text-foreground">
+						{plan?.name ?? "plan"}
+					</h1>
+					{budget > 0 && (
+						<p className="mt-2 font-mono text-lg tabular-nums text-foreground">
+							{symbol}{left.toFixed(2)}{" "}
+							<span className="font-sans text-sm text-muted-foreground">
+								left of {symbol}{budget.toLocaleString()}
+							</span>
+						</p>
+					)}
+				</div>
+				<ExportCsv planId={planId ? parseInt(planId) : undefined} planName={plan?.name} />
+			</div>
 
 			<div className="mt-6 flex gap-6 border-b border-border pb-6">
 				<div>

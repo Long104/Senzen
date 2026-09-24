@@ -7,6 +7,7 @@ import { ExpenseFeed } from "@/components/expense-feed";
 import { useTransactions } from "@/hooks/useTransactions";
 import { useCurrency } from "@/lib/currency";
 import { categoryMeta } from "@/lib/categories";
+import { ExportCsv } from "@/components/export-csv";
 
 function monthSpent(transactions: { amount: number; transaction_date: string }[]) {
 	const now = new Date();
@@ -87,6 +88,7 @@ export default function Home() {
 						{filtered?.length ?? 0} of {transactions.length}
 					</span>
 				)}
+				<ExportCsv />
 			</div>
 
 			<div className="mt-8">

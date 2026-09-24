@@ -4,7 +4,7 @@ import { useState } from "react";
 import { X } from "lucide-react";
 import type { Transaction } from "@/hooks/useTransactions";
 import { useDeleteTransaction } from "@/hooks/useTransactions";
-import { categoryMeta } from "@/lib/categories";
+import { categoryMeta, resolveCategoryIcon, useCustomCategories } from "@/lib/categories";
 import { useCurrency } from "@/lib/currency";
 import { EditExpense } from "@/components/edit-expense";
 import {
@@ -42,20 +42,24 @@ function FeedRow({
 	onDelete,
 	onEdit,
 	symbol,
+	customs,
 }: {
 	t: Transaction;
 	onDelete: (t: Transaction) => void;
 	onEdit: (t: Transaction) => void;
 	symbol: string;
+	customs: ReturnType<typeof useCustomCategories>;
 }) {
-	const meta = categoryMeta(t.category_name || t.category?.name);
+	const name = t.category_name || t.category?.name;
+	const meta = categoryMeta(name);
+	const Icon = resolveCategoryIcon(name, customs);
 	return (
 		<div
 			onClick={() => onEdit(t)}
 			title="edit"
 			className="group -mx-3 flex cursor-pointer items-center gap-3 rounded-md px-3 py-2.5 transition-colors hover:bg-card"
 		>
-			<meta.icon
+			<Icon
 				className="h-4 w-4 shrink-0 text-muted-foreground"
 				strokeWidth={1.5}
 			/>
@@ -96,6 +100,7 @@ export function ExpenseFeed({
 	const [confirmTx, setConfirmTx] = useState<Transaction | null>(null);
 	const [editing, setEditing] = useState<Transaction | null>(null);
 	const { symbol } = useCurrency();
+	const customs = useCustomCategories();
 
 	function handleDelete(id: number) {
 		setDeletingId(id);
@@ -133,7 +138,7 @@ export function ExpenseFeed({
 								key={t.id}
 								className={deletingId === t.id ? "opacity-40 transition-opacity" : "transition-opacity"}
 							>
-								<FeedRow t={t} onDelete={setConfirmTx} onEdit={setEditing} symbol={symbol} />
+								<FeedRow t={t} onDelete={setConfirmTx} onEdit={setEditing} symbol={symbol} customs={customs} />
 							</div>
 						))}
 					</div>

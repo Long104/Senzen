@@ -18,6 +18,7 @@ import { PlanSchema } from "@/types";
 import { cn } from "@/lib/utils";
 import { useCurrency } from "@/lib/currency";
 import { ExportCsv } from "@/components/export-csv";
+import { resolveCategoryIcon, useCustomCategories } from "@/lib/categories";
 
 type Plan = z.infer<typeof PlanSchema>;
 type Mode = "month" | "year" | "all" | "recurring";
@@ -43,6 +44,7 @@ export default function ReportPage() {
 	const { plansQuery } = usePlan();
 	const transactions = transactionsQuery.data ?? [];
 	const plans = (plansQuery.data ?? []) as Plan[];
+	const customs = useCustomCategories();
 
 	const now = new Date();
 	const viewDate = useMemo(() => {
@@ -239,9 +241,10 @@ export default function ReportPage() {
 					<div className="mt-8 divide-y divide-border/60">
 						{recurring.map(({ key, streak, recent, avg }) => {
 							const meta = categoryMeta(key);
+							const Icon = resolveCategoryIcon(key, customs);
 							return (
 								<div key={key} className="flex items-center gap-3 py-3.5">
-									<meta.icon
+									<Icon
 										className="h-4 w-4 shrink-0 text-muted-foreground"
 										strokeWidth={1.5}
 									/>
@@ -369,6 +372,7 @@ export default function ReportPage() {
 								const items = view.inWindow.filter(
 									(t) => (t.category_name || t.category?.name || "other") === key,
 								);
+								const Icon = resolveCategoryIcon(key, customs);
 								return (
 									<div key={key}>
 										<button
@@ -376,7 +380,7 @@ export default function ReportPage() {
 											onClick={() => setExpandedCategory(expanded ? null : key)}
 											className="group flex w-full items-center gap-3 rounded-md py-2.5 text-left transition-colors hover:bg-muted/50"
 										>
-											<meta.icon
+											<Icon
 												className="h-4 w-4 shrink-0 text-muted-foreground"
 												strokeWidth={1.5}
 											/>
