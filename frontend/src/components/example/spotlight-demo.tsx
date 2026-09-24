@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { BrowserFrame } from "@example/browser-frame";
 
 export function HeroComposer() {
 	return (
@@ -9,16 +8,16 @@ export function HeroComposer() {
 			<div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,#E5E5E5_1px,transparent_1px),linear-gradient(to_bottom,#E5E5E5_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-50" />
 
 			<div className="relative z-10 flex-1 w-full max-w-7xl mx-auto px-6 md:px-10 flex items-center pb-[10vh] lg:pb-[14vh]">
-				<div className="w-full grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center py-10 lg:py-0">
+				<div className="w-full max-w-2xl py-10 lg:py-0">
 					{/* LEFT: eyebrow + headline + tagline + CTA */}
 					<div className="w-full flex flex-col items-start text-left">
 						{/* Eyebrow with inline bear */}
 						<div className="flex items-center gap-2 mb-4">
 							<img
-								src="/mascot/bear-mini-peeking.png"
+								src="/logo.png"
 								alt=""
 								aria-hidden="true"
-								className="w-8 h-8 object-contain"
+								className="w-8 h-8 rounded-lg object-contain"
 							/>
 							<span className="font-mono text-sm text-[#555555]">
 								hi, this is senzen
@@ -67,27 +66,6 @@ export function HeroComposer() {
 							</Link>
 						</div>
 					</div>
-
-					{/* RIGHT: hero screenshot frame */}
-					<div className="relative w-full flex-1 min-h-[340px] lg:min-h-[480px]">
-						{/* subtle emerald dot halo */}
-						<div
-							aria-hidden="true"
-							className="absolute inset-0 z-0 opacity-[0.12]"
-							style={{
-								backgroundImage:
-									"radial-gradient(circle, #1EC072 3px, transparent 3px)",
-								backgroundSize: "18px 18px",
-							}}
-						/>
-						<BrowserFrame
-							src="/screenshots/home.png"
-							alt="Senzen home view — active plans at a glance"
-							label="senzen.app/home — active plans"
-							className="relative z-10"
-						/>
-					</div>
-				</div>
 			</div>
 		</section>
 	);

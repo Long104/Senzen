@@ -73,10 +73,10 @@ export default function LoginPage() {
 				{/* Bear cameo */}
 				<div className="flex justify-center -mb-2">
 					<img
-						src="/mascot/bear-mini-peeking.png"
+						src="/logo.png"
 						alt=""
 						aria-hidden="true"
-						className="w-8 h-8 object-contain"
+						className="w-8 h-8 rounded-lg object-contain"
 					/>
 				</div>
 
