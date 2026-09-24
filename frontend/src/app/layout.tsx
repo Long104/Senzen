@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "@/app/globals.css";
 import { AuthProvider } from "@/context/auth";
@@ -17,9 +17,19 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-	title: "Senzen — Financial planning. Built better.",
-	description:
-		"Automated budgeting, a visual logic builder, and real-time ledger intelligence. Build your money engine without code.",
+	title: "senzen",
+	description: "quiet expense tracking",
+	appleWebApp: {
+		capable: true,
+		title: "senzen",
+		statusBarStyle: "default",
+	},
+};
+
+export const viewport: Viewport = {
+	themeColor: "#EBEDEE",
+	width: "device-width",
+	initialScale: 1,
 };
 
 export default function RootLayout({
